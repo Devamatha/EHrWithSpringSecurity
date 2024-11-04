@@ -56,7 +56,7 @@ public class AddJobDetailsServiceImpl implements AddJobDetailsService {
         existingJobDetails.setCreatedAt(updateDto.getCreatedAt());
         existingJobDetails.setYearsOfExperience(updateDto.getYearsOfExperience());
         existingJobDetails.setNoOfVacancies(updateDto.getNoOfVacancies());
-        String formattedPercentage = updateDto.getOverallPercentage() ;
+        String formattedPercentage = updateDto.getOverallPercentage();
         existingJobDetails.setOverallPercentage(formattedPercentage);
 
         return addJobDetailsRepository.save(existingJobDetails);

@@ -3,7 +3,10 @@ package com.techpixe.ehr.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,7 @@ public class HR {
     @Column(columnDefinition = "LONGBLOB")
     private byte[] logo;
     private boolean active;
-   
+
     @JsonManagedReference
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<SubscriptionPlan> subscriptionPlan = new ArrayList<>();
@@ -65,5 +68,5 @@ public class HR {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Holiday> holiday = new ArrayList<>();
 
-    
+
 }

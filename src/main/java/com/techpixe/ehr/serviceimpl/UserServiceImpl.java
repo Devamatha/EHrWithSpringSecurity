@@ -38,13 +38,13 @@ public class UserServiceImpl implements UserService {
         Random random = new Random();
 
         StringBuilder lettersBuilder = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             int index = random.nextInt(LETTERS.length());
             lettersBuilder.append(LETTERS.charAt(index));
         }
 
         StringBuilder digitsBuilder = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             int index = random.nextInt(DIGITS.length());
             digitsBuilder.append(DIGITS.charAt(index));
         }
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     public HR registration(String email, Long mobileNumber, String fullName, String planType,
                            String companyName, String authorizedCompanyName, MultipartFile logo, String address) throws IOException {
 
-       // SubscriptionPlan subscriptionId = subscriptionPlanRepository.findById(subscriptionPlan.orElseThrow(() -> new RuntimeException(subscriptionPlan + "is not present"));
+        // SubscriptionPlan subscriptionId = subscriptionPlanRepository.findById(subscriptionPlan.orElseThrow(() -> new RuntimeException(subscriptionPlan + "is not present"));
         HR user = new HR();
         user.setFullName(fullName);
         user.setEmail(email);

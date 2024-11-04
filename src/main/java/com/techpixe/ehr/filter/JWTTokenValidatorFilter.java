@@ -29,7 +29,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                 if (env != null) {
                     String secret = env.getProperty(ApplicationConstants.JWT_SECRET_KEY, ApplicationConstants.JWT_SECRET_DEFAULT_VALUE);
                     SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-                    if(secretKey!=null){
+                    if (secretKey != null) {
                         Claims claims = Jwts.parser().verifyWith(secretKey)
                                 .build().parseSignedClaims(jwt).getPayload();
                         String username = String.valueOf(claims.get("username"));

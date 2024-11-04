@@ -1,7 +1,7 @@
 package com.techpixe.ehr.controller;
 
-import com.techpixe.ehr.entity.Holiday;
 import com.techpixe.ehr.entity.HR;
+import com.techpixe.ehr.entity.Holiday;
 import com.techpixe.ehr.repository.UserRepository;
 import com.techpixe.ehr.service.HolidayService;
 import org.springframework.beans.factory.annotation.Autowired;

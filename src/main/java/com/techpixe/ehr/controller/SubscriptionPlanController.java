@@ -23,13 +23,13 @@ public class SubscriptionPlanController {
 
     @PostMapping("/save/{userId}")
     public ResponseEntity<SubscriptionPlan> createSubscriptionPlan(@PathVariable long userId, @RequestBody SubscriptionPlan subscriptionPlan) {
-        SubscriptionPlan createdPlan = subscriptionPlanService.createSubscriptionPlan(userId,subscriptionPlan);
+        SubscriptionPlan createdPlan = subscriptionPlanService.createSubscriptionPlan(userId, subscriptionPlan);
         return ResponseEntity.ok(createdPlan);
     }
 
     @PostMapping("/upgrade/{userId}")
     public ResponseEntity<SubscriptionPlan> upgradeSubscriptionPlan(@PathVariable long userId, @RequestBody SubscriptionPlan subscriptionPlan) {
-        SubscriptionPlan createdPlan = subscriptionPlanService.upgradSubscriptionPlan(userId,subscriptionPlan);
+        SubscriptionPlan createdPlan = subscriptionPlanService.upgradSubscriptionPlan(userId, subscriptionPlan);
         return ResponseEntity.ok(createdPlan);
     }
 

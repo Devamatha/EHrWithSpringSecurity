@@ -2,7 +2,6 @@ package com.techpixe.ehr.controller;
 
 import com.techpixe.ehr.entity.EmployeeTable;
 import com.techpixe.ehr.entity.LeaveApprovalTable;
-import com.techpixe.ehr.entity.LeaveApprovalTable;
 import com.techpixe.ehr.repository.EmployeeTableRepository;
 import com.techpixe.ehr.service.LeaveApprovalTableService;
 import org.springframework.beans.factory.annotation.Autowired;

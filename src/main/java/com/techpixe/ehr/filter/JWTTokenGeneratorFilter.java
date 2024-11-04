@@ -36,18 +36,18 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
                             .expiration(new Date((new Date()).getTime() + 30000000))
                             .signWith(secretKey).compact();
                     response.setHeader(ApplicationConstants.JWT_HEADER, jwt);
-                }
-                else{
-                    System.out.println("env is not found"+env);
+                } else {
+                    System.out.println("env is not found" + env);
                 }
                 filterChain.doFilter(request, response);
-            }else{
-                System.out.println("authentication is not found"+authentication);
+            } else {
+                System.out.println("authentication is not found" + authentication);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return !request.getServletPath().equals("/api/users/user");

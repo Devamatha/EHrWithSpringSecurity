@@ -41,6 +41,7 @@ public interface PersonalInformationService {
     PersonalInfoDto getPersonalInformationByexamId(String examId);
 
     List<Question> getAllQuestionsByPersonalInformationId(Long personalInformationId);
-    public Long getCountByUserId(Long userId) ;
+
+    public Long getCountByUserId(Long userId);
 
 }

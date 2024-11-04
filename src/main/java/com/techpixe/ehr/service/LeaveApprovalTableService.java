@@ -1,7 +1,6 @@
 package com.techpixe.ehr.service;
 
 import com.techpixe.ehr.entity.LeaveApprovalTable;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;

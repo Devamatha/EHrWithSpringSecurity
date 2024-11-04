@@ -15,16 +15,16 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(subscriptionInterceptor)
-                .addPathPatterns("/api/JobDetails/addJob/**","/api/JobDetails/update/**","/api/JobDetails/delete/**",
-                        "/api/employees/user/**","/api/employees/update/**","/api/employees/delete/**",
-                        "/api/holidays/user/**","/api/holidays/update/**","/api/holidays/delete/**",
+                .addPathPatterns("/api/JobDetails/addJob/**", "/api/JobDetails/update/**", "/api/JobDetails/delete/**",
+                        "/api/employees/user/**", "/api/employees/update/**", "/api/employees/delete/**",
+                        "/api/holidays/user/**", "/api/holidays/update/**", "/api/holidays/delete/**",
 
-                        "/api/notifications/send/**","/api/payheads/user/**","/api/candidates/upload-resume/**","/api/candidates/update-Details/**",
-                        "/api/subscriptions/save/**","/api/addPayHeadsToEmployee/employeeData/**",
-                        "/api/payHeads/user/**","/api/payHeads/delete/**","/api/payHeads/update/**","/api/leaveApproval/status/**" ,
-                        "/api/attendance/employee/**","/api/attendance/update/**",
+                        "/api/notifications/send/**", "/api/payheads/user/**", "/api/candidates/upload-resume/**", "/api/candidates/update-Details/**",
+                        "/api/subscriptions/save/**", "/api/addPayHeadsToEmployee/employeeData/**",
+                        "/api/payHeads/user/**", "/api/payHeads/delete/**", "/api/payHeads/update/**", "/api/leaveApproval/status/**",
+                        "/api/attendance/employee/**", "/api/attendance/update/**",
                         "/api/leaveApproval/employee/**"
                 )
-                .excludePathPatterns("/login", "/register","api/contacts/save");  // Exclude paths where you don't need checks
+                .excludePathPatterns("/login", "/register", "api/contacts/save");  // Exclude paths where you don't need checks
     }
 }

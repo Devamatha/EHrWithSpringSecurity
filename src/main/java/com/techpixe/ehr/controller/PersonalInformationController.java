@@ -28,12 +28,12 @@ public class PersonalInformationController {
     private EmailService emailService;
 
     @PostMapping("/upload-resume/{user_id}")
-    public PersonalInformation  uploadResume(@RequestParam(value = "file", required = false) MultipartFile file,
+    public PersonalInformation uploadResume(@RequestParam(value = "file", required = false) MultipartFile file,
 
-                                          @PathVariable Long user_id) throws Exception {
+                                            @PathVariable Long user_id) throws Exception {
 
-       PersonalInformation savedPersonalInformation = personalInformationService.savePersonalInformation(file,
-                    user_id);
+        PersonalInformation savedPersonalInformation = personalInformationService.savePersonalInformation(file,
+                user_id);
         return savedPersonalInformation;
 
     }
