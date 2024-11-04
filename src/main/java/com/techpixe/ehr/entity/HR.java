@@ -1,0 +1,69 @@
+package com.techpixe.ehr.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+
+public class HR {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long user_Id;
+
+    private String fullName;
+    private String email;
+    private Long mobileNumber;
+    @JsonIgnore
+    private String password;
+    private String companyName;
+    private String authorizedCompanyName;
+    private String address;
+    private String role;
+    @JsonIgnore
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] logo;
+    private boolean active;
+   
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<SubscriptionPlan> subscriptionPlan = new ArrayList<>();
+
+    @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<AddJobDetails> addJobDetails = new ArrayList<>();
+
+    @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<PersonalInformation> personalInformation = new ArrayList<>();
+
+    @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<EmployeeTable> employeeTables = new ArrayList<>();
+
+    @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<PayHeads> payHeads = new ArrayList<>();
+
+    @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Holiday> holiday = new ArrayList<>();
+
+    
+}
