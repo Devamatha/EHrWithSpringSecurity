@@ -10,14 +10,14 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface EmployeeTableRepository extends JpaRepository<EmployeeTable, Long> {
-    EmployeeTable findByContactNo(Long contactNo);
+    //EmployeeTable findByContactNo(Long contactNo);
 
-    EmployeeTable findByEmailId(String emailId);
+  //  EmployeeTable findByEmailId(String emailId);
 
     @Query("SELECT aphte FROM AddPayHeadsToEmployee aphte WHERE aphte.employeeTable.id=:id")
     List<AddPayHeadsToEmployee> findAddPayHeadsToEmployeeByUserId(Long id);
 
-    @Query("SELECT e.fullName, u.companyName, u.authorizedCompanyName, u.address,u.logo, aphte "
+    @Query("SELECT  u.companyName, u.authorizedCompanyName, u.address,u.logo, aphte "
             + "FROM EmployeeTable e " + "JOIN e.user u " + "JOIN e.addPayHeadsToEmployee aphte " + "WHERE e.id = :id")
     List<Object[]> findEmployeeWithPayHeads(Long id);
 

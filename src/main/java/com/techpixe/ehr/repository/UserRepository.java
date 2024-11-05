@@ -9,16 +9,16 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<HR, Long> {
 
-    HR findByMobileNumber(Long mobileNumber);
+    //HR findByMobileNumber(Long mobileNumber);
 
-    HR findByEmail(String email);
+   // HR findByEmail(String email);
 
     // @Query("SELECT u.fullName, u.email, u.mobileNumber,u.user_Id,u.password FROM
     // User u WHERE u.email = :email")
     // Object[] findByEmail(@Param("email") String email);
 
-    @Query("SELECT h.fullName, h.email, h.mobileNumber,h.password FROM HR h WHERE h.user_Id = :userId")
-    Object[] findPartialUserById(@Param("userId") Long userId);
+//    @Query("SELECT h.fullName, h.email, h.mobileNumber,h.password FROM HR h WHERE h.user_Id = :userId")
+//    Object[] findPartialUserById(@Param("userId") Long userId);
 
     @Query("SELECT ajd FROM AddJobDetails ajd WHERE ajd.user.user_Id = :userId")
     List<AddJobDetails> findAddJobDetailsByUserId(Long userId);

@@ -25,7 +25,7 @@ public class LeaveApprovalTableController {
         EmployeeTable employeeTable = employeeTableRepository.findById(empId)
                 .orElseThrow(() -> new RuntimeException(empId + "is not present"));
         leaveapprovalTable.setEmployeeTable(employeeTable);
-        leaveapprovalTable.setFullName(employeeTable.getFullName());
+        leaveapprovalTable.setFullName(employeeTable.getClients().getFullName());
         LeaveApprovalTable createdLeaveapprovalTable = leaveapprovalTableService
                 .createLeaveapprovalTable(leaveapprovalTable);
         return ResponseEntity.ok(createdLeaveapprovalTable);

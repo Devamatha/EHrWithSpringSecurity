@@ -21,11 +21,8 @@ public class EmployeeTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fullName;
-
     private String empCode;
     private Date dob;
-
     private String gender;
     private String maritalStatus;
     private String nationality;
@@ -33,19 +30,11 @@ public class EmployeeTable {
     private String city;
     private String state;
     private String country;
-    private String emailId;
-    private Long contactNo;
     private String identification;
     private String idNumber;
     private String employeeType;
-
     private LocalDate joiningDate;
-
     private String bloodGroup;
-    @JsonIgnore
-    private String password;
-    private String role;
-
     private String designation;
     private String department;
     private Long panNo;
@@ -64,6 +53,12 @@ public class EmployeeTable {
     @JoinColumn(name = "user_Id")
     @JsonBackReference
     private HR user;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "clients_id")
+    private Clients clients;
+
     @JsonIgnore
     @JsonManagedReference
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "employeeTable")

@@ -3,9 +3,7 @@ package com.techpixe.ehr.config;
 
 import com.techpixe.ehr.exceptionhandle.CustomAccessDeniedHandler;
 import com.techpixe.ehr.exceptionhandle.CustomBasicAuthenticationEntryPoint;
-import com.techpixe.ehr.filter.CsrfCookieFilter;
-import com.techpixe.ehr.filter.JWTTokenGeneratorFilter;
-import com.techpixe.ehr.filter.JWTTokenValidatorFilter;
+import com.techpixe.ehr.filter.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,11 +32,11 @@ public class ProdProjectSecurityConfig {
         http
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler).
-                        ignoringRequestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                        ignoringRequestMatchers("/api/users/user", "/api/clients/login","/api/clients/save","/api/clients/save/Employee/{id}").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-                //  .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
-                // .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
-                //  .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()).
@@ -47,16 +45,9 @@ public class ProdProjectSecurityConfig {
 //                                requestMatchers("/getCards", "/myAccount", "/myBalance", "/getLoans", "/getNotices").authenticated().
 //
         requestMatchers("/api/JobDetails/addJob/1", "/api/JobDetails").authenticated().
-//                                requestMatchers("/myAccount").hasAnyAuthority("VIEWACCOUNT", "VIEWCARDS").
-//                                requestMatchers("/myBalance").hasAuthority("VIEWBALANCE").
-//                                requestMatchers("/getLoans").hasAuthority("VIEWLOANS").
-//                                requestMatchers("/getNotices").hasAuthority("VIEWNOTICES").
-//                                requestMatchers("/getCards").hasRole("USER").
-//                                requestMatchers("/myAccount").hasAnyRole("USER", "ADMIN").
-//                                requestMatchers("/myBalance").hasRole("USER").
-//                                requestMatchers("/getLoans").hasRole("USER").
-//                                requestMatchers("/getNotices").hasRole("USER").
-        requestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save").permitAll());
+                                requestMatchers("/api/clients/save/Employee/{id}").hasRole("HR").
+
+        requestMatchers("/api/users/user", "/api/clients/login","/api/clients/save").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));

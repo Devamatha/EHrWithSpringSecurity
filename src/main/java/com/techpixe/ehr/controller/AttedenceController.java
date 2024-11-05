@@ -27,7 +27,7 @@ public class AttedenceController {
         EmployeeTable employeeTable = employeeTableRepository.findById(empId)
                 .orElseThrow(() -> new RuntimeException(empId + "is not present"));
         attendance.setEmployeeTable(employeeTable);
-        attendance.setName(employeeTable.getFullName());
+        attendance.setName(employeeTable.getClients().getFullName());
         attendance.setEmpCode(employeeTable.getEmpCode());
 
         Attendance createdAttedence = attendanceService.createAttendance(attendance);

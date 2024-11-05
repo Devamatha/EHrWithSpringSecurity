@@ -25,13 +25,15 @@ public class AddPayHeadsToEmployeeController {
                                                                              @RequestBody AddPayHeadsToEmployee addPayHeadsToEmployee) {
         EmployeeTable employeeTable = employeeTableRepository.findById(empId)
                 .orElseThrow(() -> new RuntimeException(empId + "is not present"));
+
         addPayHeadsToEmployee.setEmployeeTable(employeeTable);
         addPayHeadsToEmployee.setEmpCode(employeeTable.getEmpCode());
-        addPayHeadsToEmployee.setEmpName(employeeTable.getFullName());
+        addPayHeadsToEmployee.setEmpName(employeeTable.getClients().getFullName());
         AddPayHeadsToEmployee createdAddPayHeadsToEmployee = addPayHeadsToEmployeeService
                 .createAddPayHeadsToEmployee(addPayHeadsToEmployee);
         return ResponseEntity.ok(createdAddPayHeadsToEmployee);
     }
+
 
 
     @PostMapping("/employeeData/{empId}")
@@ -45,7 +47,7 @@ public class AddPayHeadsToEmployeeController {
         for (AddPayHeadsToEmployee addPayHeadsToEmployee : addPayHeadsToEmployees) {
             addPayHeadsToEmployee.setEmployeeTable(employeeTable);
             addPayHeadsToEmployee.setEmpCode(employeeTable.getEmpCode());
-            addPayHeadsToEmployee.setEmpName(employeeTable.getFullName());
+            addPayHeadsToEmployee.setEmpName(employeeTable.getClients().getFullName());
             addPayHeadsToEmployeeService.createAddPayHeadsToEmployee(addPayHeadsToEmployee);
         }
 

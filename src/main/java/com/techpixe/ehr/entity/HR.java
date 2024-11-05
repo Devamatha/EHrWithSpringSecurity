@@ -1,5 +1,6 @@
 package com.techpixe.ehr.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -7,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import com.techpixe.ehr.entity.Clients;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-
 public class HR {
 
     @Id
@@ -24,20 +24,21 @@ public class HR {
     @Column(name = "user_id")
     private Long user_Id;
 
-    private String fullName;
-    private String email;
-    private Long mobileNumber;
-    @JsonIgnore
-    private String password;
+
     private String companyName;
     private String authorizedCompanyName;
     private String address;
-    private String role;
+
     @JsonIgnore
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] logo;
     private boolean active;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "clients_id")
+    private Clients clients;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)

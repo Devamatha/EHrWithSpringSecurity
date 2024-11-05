@@ -9,14 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-
-    HR registration(String email, Long mobileNumber, String fullName, String planType,
-                    String companyName, String authorizedCompanyName, MultipartFile logo, String address) throws IOException;
-
-    ResponseEntity<?> changePassword(Long user_Id, String password, String confirmPassword);
-
-    ResponseEntity<?> forgotPassword(String email);
-
     Optional<HR> getByUserId(Long user_Id);
 
     List<HR> allUser();

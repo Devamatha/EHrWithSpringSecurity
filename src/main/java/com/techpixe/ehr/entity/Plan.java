@@ -15,7 +15,7 @@ public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long subscription_Id;
-    private String planType; // Quarterly, Monthly, Yearly
+    private String planType;
     private double amount;
     @Column(length = 1000)
     private String discription;
@@ -25,8 +25,8 @@ public class Plan {
     //private Long totalImages;
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "admin_Id")
-    private Admin admin;
+    @JoinColumn(name = "clients_Id")
+    private Clients clients;
 
 
 }

@@ -1,7 +1,6 @@
 package com.techpixe.ehr.controller;
 
 import com.techpixe.ehr.entity.Plan;
-import com.techpixe.ehr.service.AdminService;
 import com.techpixe.ehr.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +14,14 @@ import java.util.List;
 public class PlanController {
 
     @Autowired
-    private PlanService subscriptionPlanService;
+    private PlanService planService;
 
-    @Autowired
-    private AdminService adminService;
+
 
 
     @PostMapping("/save/{adminId}")
     public ResponseEntity<Plan> createSubscriptionPlan(@RequestBody Plan subscriptionPlan, @PathVariable long adminId) {
-        Plan createdPlan = subscriptionPlanService.createSubscriptionPlan(subscriptionPlan, adminId);
+        Plan createdPlan = planService.createSubscriptionPlan(subscriptionPlan, adminId);
         return ResponseEntity.ok(createdPlan);
     }
 
@@ -31,7 +29,7 @@ public class PlanController {
     public ResponseEntity<Plan> updateSubscriptionPlan(
             @PathVariable Long id,
             @RequestBody Plan subscriptionPlan) {
-        Plan updatedPlan = subscriptionPlanService.updateSubscriptionPlan(id, subscriptionPlan);
+        Plan updatedPlan = planService.updateSubscriptionPlan(id, subscriptionPlan);
         if (updatedPlan != null) {
             return ResponseEntity.ok(updatedPlan);
         }
@@ -40,7 +38,7 @@ public class PlanController {
 
     @GetMapping("/get/{id}")
     public ResponseEntity<Plan> getSubscriptionPlanById(@PathVariable Long id) {
-        Plan plan = subscriptionPlanService.getSubscriptionPlanById(id);
+        Plan plan = planService.getSubscriptionPlanById(id);
         if (plan != null) {
             return ResponseEntity.ok(plan);
         }
@@ -49,13 +47,13 @@ public class PlanController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteSubscriptionPlan(@PathVariable Long id) {
-        subscriptionPlanService.deleteSubscriptionPlan(id);
+        planService.deleteSubscriptionPlan(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Plan>> getAllSubscriptionPlans() {
-        List<Plan> plans = subscriptionPlanService.getAllSubscriptionPlans();
+        List<Plan> plans = planService.getAllSubscriptionPlans();
         return ResponseEntity.ok(plans);
     }
 

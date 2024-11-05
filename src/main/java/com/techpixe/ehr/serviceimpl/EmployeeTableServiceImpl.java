@@ -33,29 +33,22 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
                                         String nationality, String address, String city, String state, String country, String emailId,
                                         Long contactNo, String identification, String idNumber, String employeeType, LocalDate joiningDate,
                                         String bloodGroup, MultipartFile photograph, Long userId) throws IOException {
-        // Find the user by ID
+
         HR user_Id = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException(userId + " is not found"));
 
-        // Create a new EmployeeTable instance
         EmployeeTable employee = new EmployeeTable();
-        employee.setFullName(fullName);
         String empCode = generateEmpCode();
         String password = generatePassword();
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         employee.setEmpCode(empCode);
         employee.setDob(dob);
         employee.setGender(gender);
-        employee.setPassword(bCryptPasswordEncoder.encode(password));
         employee.setMaritalStatus(maritalStatus);
         employee.setNationality(nationality);
         employee.setAddress(address);
         employee.setCity(city);
         employee.setState(state);
         employee.setCountry(country);
-        employee.setEmailId(emailId);
-        employee.setContactNo(contactNo);
-        employee.setRole("employee");
         employee.setIdentification(identification);
         employee.setIdNumber(idNumber);
         employee.setEmployeeType(employeeType);
@@ -65,12 +58,10 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
         employee.setUser(user_Id);
         employee.setActive(true);
         userServiceImpl.sendmail(fullName, emailId, contactNo, password);
-
-        // Save the EmployeeTable entity
         return employeeTableRepository.save(employee);
     }
 
-    private String generateEmpCode() {
+    public String generateEmpCode() {
         String letters = RandomStringUtils.randomAlphabetic(2).toUpperCase();
         String digits = RandomStringUtils.randomNumeric(2);
         return letters + digits;
@@ -99,8 +90,7 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
                                                   Integer totalDays, Integer presentDays, byte[] photograph, HR user) {
 
         return employeeTableRepository.findById(id).map(employee -> {
-            if (fullName != null)
-                employee.setFullName(fullName);
+
             if (empCode != null)
                 employee.setEmpCode(empCode);
             if (dob != null)
@@ -119,10 +109,7 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
                 employee.setState(state);
             if (country != null)
                 employee.setCountry(country);
-            if (emailId != null)
-                employee.setEmailId(emailId);
-            if (contactNo != null)
-                employee.setContactNo(contactNo);
+
             if (identification != null)
                 employee.setIdentification(identification);
             if (idNumber != null)
@@ -133,10 +120,7 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
                 employee.setJoiningDate(joiningDate);
             if (bloodGroup != null)
                 employee.setBloodGroup(bloodGroup);
-            if (password != null)
-                employee.setPassword(password);
-            if (role != null)
-                employee.setRole(role);
+
             if (designation != null)
                 employee.setDesignation(designation);
             if (department != null)

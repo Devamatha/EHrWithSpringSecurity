@@ -27,8 +27,7 @@ public class UserServiceImpl implements UserService {
     private static final String DIGITS = "0123456789";
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    SubscriptionPlanRepository subscriptionPlanRepository;
+
     @Autowired
     private JavaMailSender javaMailSender;
     @Value("$(spring.mail.username)")
@@ -52,29 +51,7 @@ public class UserServiceImpl implements UserService {
         return lettersBuilder.toString() + digitsBuilder;
     }
 
-    @Override
-    public HR registration(String email, Long mobileNumber, String fullName, String planType,
-                           String companyName, String authorizedCompanyName, MultipartFile logo, String address) throws IOException {
 
-        // SubscriptionPlan subscriptionId = subscriptionPlanRepository.findById(subscriptionPlan.orElseThrow(() -> new RuntimeException(subscriptionPlan + "is not present"));
-        HR user = new HR();
-        user.setFullName(fullName);
-        user.setEmail(email);
-        user.setMobileNumber(mobileNumber);
-        //user.setSubscriptionPlan(subscriptionId);
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String password = generatePassword();
-        user.setPassword(bCryptPasswordEncoder.encode(password));
-        user.setAuthorizedCompanyName(authorizedCompanyName);
-        user.setCompanyName(companyName);
-        user.setAddress(address);
-        user.setLogo(logo.getBytes());
-        user.setActive(true);
-        this.sendmail(fullName, email, mobileNumber, password);
-
-        return userRepository.save(user);
-
-    }
 
     public void sendmail(String fullName, String email, Long mobileNumber, String password) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -91,70 +68,7 @@ public class UserServiceImpl implements UserService {
 
     // ***************CHANGE PASSWORD*************************
 
-    @Override
-    public ResponseEntity<?> changePassword(Long user_Id, String password, String confirmPassword) {
-        Object[] user = userRepository.findPartialUserById(user_Id);
-        // System.out.println(Arrays.deepToString(user));
 
-        HR userEntity = new HR();
-
-        Object[] userDetails = (Object[]) user[0];
-        String userPassword = (String) userDetails[3];
-        // System.out.println(userPassword);
-        if (user != null) {
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
-            if (user != null && bCryptPasswordEncoder.matches(password, userPassword)) {
-                userEntity.setPassword(bCryptPasswordEncoder.encode(confirmPassword));
-                userRepository.save(userEntity);
-                return ResponseEntity.ok("Password Changed Successfully");
-
-            } else {
-                ErrorResponseDto error = new ErrorResponseDto();
-                error.setError("please enter the correct password:" + password);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-            }
-        } else {
-            ErrorResponseDto error = new ErrorResponseDto();
-            error.setError("User is not present:" + user_Id);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-
-        }
-
-    }
-
-    @Override
-    public ResponseEntity<?> forgotPassword(String email) {
-        HR user = userRepository.findByEmail(email);
-        HR saveUser = new HR();
-        if (user != null) {
-            // System.out.println(user);
-            // Object[] userDetails = (Object[]) user[0];
-
-            String password = generatePassword();
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
-            saveUser.setPassword(bCryptPasswordEncoder.encode(password));
-            userRepository.save(saveUser);
-
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom(fromMail);
-            simpleMailMessage.setTo(email);
-            simpleMailMessage.setSubject("password changed Successfully in E_HR application\n");
-            simpleMailMessage.setText("Dear " + user.getFullName()
-                    + "\n\nPlease check your  email and generated password\n UserEmail  :" + email
-                    + "\n  MobileNumber :" + user.getMobileNumber() + "\n New Password   :" + password + "\n\n"
-                    + "you will be required to reset the New password upon login\n\n\n if you have any question or if you would like to request a call-back,please email us at support info@techpixe.com");
-            javaMailSender.send(simpleMailMessage);
-
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("forgot password successfully");
-        } else {
-
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto();
-            errorResponseDto.setError("Invalid Email");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDto);
-        }
-    }
 
     @Override
     public Optional<HR> getByUserId(Long user_Id) {

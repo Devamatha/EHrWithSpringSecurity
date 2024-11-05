@@ -3,6 +3,7 @@ package com.techpixe.ehr.controller;
 import com.techpixe.ehr.constant.ApplicationConstants;
 import com.techpixe.ehr.dto.LoginRequestDTO;
 import com.techpixe.ehr.dto.LoginResponseDTO;
+import com.techpixe.ehr.dto.RegisterDto;
 import com.techpixe.ehr.entity.Clients;
 import com.techpixe.ehr.service.ClientsService;
 import io.jsonwebtoken.Jwts;
@@ -16,10 +17,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -35,10 +35,16 @@ public class ClientsController {
     @Autowired
     public ClientsService clientsService;
 
+    @PostMapping("/save/Employee/{id}")
+    public ResponseEntity<?> saveEmployee(@RequestBody RegisterDto registerDto ,@PathVariable(required = false) Long id) {
+        clientsService.registerEmployee(registerDto,id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registerDto);
+    }
+
     @PostMapping("/save")
-    public Clients saveClient(@RequestBody Clients clients) {
-        clientsService.saveClient(clients);
-        return clients;
+    public ResponseEntity<?> saveClient(@RequestBody RegisterDto registerDto) {
+        clientsService.registerClients(registerDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registerDto);
     }
 
     @PostMapping("/login")
@@ -70,6 +76,7 @@ public class ClientsController {
         } else {
             System.out.println(authenticationResponse + "is not found");
         }
+
         return ResponseEntity.status(HttpStatus.OK).header(ApplicationConstants.JWT_HEADER, jwt)
                 .body(new LoginResponseDTO(HttpStatus.OK.getReasonPhrase(), jwt));
     }
