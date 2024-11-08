@@ -6,7 +6,10 @@ import com.techpixe.ehr.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,11 +19,10 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 public class UserController {
 
-
+    @Autowired
     UserService userService;
     @Autowired
     private UserRepository userRepository;
-
 
 
     private boolean isEmail(String emailOrMobileNumber) {
@@ -30,7 +32,6 @@ public class UserController {
     private boolean isMobileNumber(String emailOrMobileNumber) {
         return emailOrMobileNumber.matches("\\d+");
     }
-
 
 
     @GetMapping("/{id}")

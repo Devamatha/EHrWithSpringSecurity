@@ -78,9 +78,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<HR> allUser() {
         List<HR> fetchAllUsers = userRepository.findAll();
-        if (fetchAllUsers == null) {
-            throw new ResponseStatusException(HttpStatus.OK, "No Users Found");
-        }
         return fetchAllUsers;
     }
 

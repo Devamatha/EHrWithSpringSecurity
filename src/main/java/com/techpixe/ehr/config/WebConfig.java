@@ -25,6 +25,6 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/attendance/employee/**", "/api/attendance/update/**",
                         "/api/leaveApproval/employee/**"
                 )
-                .excludePathPatterns("/login", "/register", "api/contacts/save");  // Exclude paths where you don't need checks
+                .excludePathPatterns("/login", "/register", "api/contacts/save");
     }
 }
