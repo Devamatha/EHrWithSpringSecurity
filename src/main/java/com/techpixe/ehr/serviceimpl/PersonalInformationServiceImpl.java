@@ -133,6 +133,8 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
                 throw new Exception(e.getMessage());
             }
 
+        }else{
+            throw new RuntimeException(subscriptions+"  Subscription plan not found");
         }
 
 

@@ -55,7 +55,10 @@ public class ProjectSecurityConfig {
                 }))
                 .csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
                         .ignoringRequestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save",
-                                "/api/plan/getAll")
+                                "/api/plan/getAll","/api/users/add-job-details/{userId}",
+                                "/api/users/holiday/{userId}","/api/users/employeedetails/{userId}",
+                                "/api/users/payHeads/{userId}","/api/users/attendance/{userId}","/api/employees/{id}",
+                                "/api/JobDetails/{id}","/api/employees/addPayHeaddetails/{id}","/api/payHeads/{payHeadId}")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
@@ -66,9 +69,22 @@ public class ProjectSecurityConfig {
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(POST,"/api/plan/save/**").hasRole("ADMIN")
-                        .requestMatchers("/api/clients/save/Employee/{id}").hasRole("HR")
+                        .requestMatchers("/api/clients/save/Employee/{id}",
+                                "/api/JobDetails/addJob/{user_Id}","/api/JobDetails/{id}","/api/JobDetails/update/{jobId}","/api/JobDetails/delete/{id}",
+                                "/api/users/add-job-details/{userId}","/api/users/holiday/{userId}",
+                                "/api/holidays/user/{userId}","/api/holidays/update/{holidayId}","/api/holidays/delete/{id}","/api/holidays/{holidayId}",
+                                "/api/users/employeedetails/{userId}","/api/users/payHeads/{userId}",
+                                "/api/users/attendance/{userId}","/api/users/leave-approvals/{userId}",
+                                "/api/users/personalInformation/{userId}","/api/candidates/upload-resume/{user_id}",
+                                "/api/attendance/update/{id}",
+                                "/api/payHeads/delete/{id}","/api/payHeads/{payHeadId}","/api/payHeads/update/{payHeadId}","/api/payHeads/user/{userId}",
+                                "/api/employees/user/{userId}","/api/employees/{id}","/api/employees/update/{id}","/api/employees/addPayHeaddetails/{id}",
+                                "/api/leaveApproval/status/{id}",
+                                "/api/candidates/update-Details/{user_id}").hasRole("HR")
+                        .requestMatchers( "/api/attendance/employee/{empId}","/api/attendance/employee/attendance/{empId}/{date}",
+                                "/api/leaveApproval/employee/{empId}").hasRole("EMPLOYEE")
                         .requestMatchers("/api/users/allUsers").hasAnyRole("HR","ADMIN")
-                        .requestMatchers("/user").authenticated()
+
                         .requestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save", "/api/plan/getAll").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
