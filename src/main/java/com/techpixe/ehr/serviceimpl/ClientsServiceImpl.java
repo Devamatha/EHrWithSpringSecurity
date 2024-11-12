@@ -35,18 +35,17 @@ public class ClientsServiceImpl implements ClientsService {
     public RegisterDto registerEmployee(RegisterDto registerDto, Long id) {
         try {
             String password = userServiceImpl.generatePassword();
-            HR hr = new HR();
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             Clients clients = new Clients();
             clients.setFullName(registerDto.getFullName());
             clients.setEmail(registerDto.getEmail());
             clients.setMobileNumber(registerDto.getMobileNumber());
-            clients.setRole(registerDto.getRole());
+            clients.setRole("ROLE_EMPLOYEE");
             clients.setPassword(bCryptPasswordEncoder.encode(password));
             clients.setCreatedAt(LocalDate.now());
             clientsRepository.save(clients);
 
-            if (registerDto.getRole().equals("ROLE_EMPLOYEE") && id != null) {
+            if (clients.getRole().equals("ROLE_EMPLOYEE") && id != null) {
                 Clients clientId = clientsRepository.findById(clients.getId()).orElseThrow(() -> new RuntimeException("Client not found"));
                 HR hrId = userRepository.findById(id).orElseThrow(() -> new RuntimeException("HR not found"));
                 EmployeeTable employee = new EmployeeTable();

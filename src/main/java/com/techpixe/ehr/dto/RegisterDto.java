@@ -51,8 +51,8 @@ public class RegisterDto {
     private String country;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String emailId;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Long contactNo;
+   // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  //  private Long contactNo;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String identification;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -38,7 +38,7 @@ public class ClientsController {
     public ClientsRepository clientsRepository;
 
     @PostMapping("/save/Employee/{id}")
-    public ResponseEntity<?> saveEmployee(@RequestBody RegisterDto registerDto, @PathVariable(required = false) Long id) {
+    public ResponseEntity<?> saveEmployee(@RequestBody RegisterDto registerDto, @PathVariable Long id) {
         clientsService.registerEmployee(registerDto, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(registerDto);
     }

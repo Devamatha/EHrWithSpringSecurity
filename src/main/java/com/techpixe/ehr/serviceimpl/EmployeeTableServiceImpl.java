@@ -7,7 +7,6 @@ import com.techpixe.ehr.repository.UserRepository;
 import com.techpixe.ehr.service.EmployeeTableService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,15 +81,15 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
     }
 
     @Override
-    public Optional<EmployeeTable> updateEmployee(Long id, String fullName, String empCode, Date dob, String gender,
+    public Optional<EmployeeTable> updateEmployee(Long id, String empCode, Date dob, String gender,
                                                   String maritalStatus, String nationality, String address, String city, String state, String country,
-                                                  String emailId, Long contactNo, String identification, String idNumber, String employeeType,
-                                                  LocalDate joiningDate, String bloodGroup, String password, String role, String designation,
+                                                  String identification, String idNumber, String employeeType,
+                                                  LocalDate joiningDate, String bloodGroup, String designation,
                                                   String department, Long panNo, String bankName, Long bankAccountNo, String iFSCCode, String pfAccountNo,
                                                   Integer totalDays, Integer presentDays, byte[] photograph, HR user) {
 
         return employeeTableRepository.findById(id).map(employee -> {
-
+            System.out.println("i am in edit method");
             if (empCode != null)
                 employee.setEmpCode(empCode);
             if (dob != null)

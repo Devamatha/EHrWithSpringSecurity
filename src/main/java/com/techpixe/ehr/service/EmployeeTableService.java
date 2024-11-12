@@ -20,10 +20,10 @@ public interface EmployeeTableService {
 
     Optional<EmployeeTable> getEmployeeById(Long id);
 
-    Optional<EmployeeTable> updateEmployee(Long id, String fullName, String empCode, Date dob, String gender,
+    Optional<EmployeeTable> updateEmployee(Long id, String empCode, Date dob, String gender,
                                            String maritalStatus, String nationality, String address, String city, String state, String country,
-                                           String emailId, Long contactNo, String identification, String idNumber, String employeeType,
-                                           LocalDate joiningDate, String bloodGroup, String password, String role, String designation,
+                                            String identification, String idNumber, String employeeType,
+                                           LocalDate joiningDate, String bloodGroup,  String designation,
                                            String department, Long panNo, String bankName, Long bankAccountNo, String iFSCCode, String pfAccountNo,
                                            Integer totalDays, Integer presentDays, byte[] photograph, HR user);
 
