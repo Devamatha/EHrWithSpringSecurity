@@ -6,31 +6,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Attendance {
+public class AddPayHeadsToEmployee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate date;
-    private String name;
+    private String selectedPayHead;
+    private String selectedPayHeadType;
+    private Double payHeadAmount;
     private String empCode;
-    private LocalTime punchIn;
-    private LocalTime punchOut;
-    private String punchInMessage;
-    private String punchOutMessage;
-    private String workingHours;
-    private boolean isAttendance;
+    private String empName;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference(value = "employee-attendance")
-    @JoinColumn(name = "emp_Id")
+    @JoinColumn(name = "empId")
+    @JsonBackReference
     private EmployeeTable employeeTable;
-
 
 }

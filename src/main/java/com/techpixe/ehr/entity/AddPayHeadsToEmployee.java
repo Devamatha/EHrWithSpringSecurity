@@ -22,7 +22,7 @@ public class AddPayHeadsToEmployee {
     private String empName;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empId")
-    @JsonBackReference
+    @JsonBackReference(value = "employee-payhead")
     private EmployeeTable employeeTable;
 
 }

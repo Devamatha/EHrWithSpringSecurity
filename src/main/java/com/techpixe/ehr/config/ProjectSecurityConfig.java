@@ -53,14 +53,15 @@ public class ProjectSecurityConfig {
                         return config;
                     }
                 }))
-                .csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-                        .ignoringRequestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save",
-                                "/api/plan/getAll","/api/users/add-job-details/{userId}",
-                                "/api/users/holiday/{userId}","/api/users/employeedetails/{userId}",
-                                "/api/users/payHeads/{userId}","/api/users/attendance/{userId}","/api/employees/{id}",
-                                "/api/JobDetails/{id}","/api/employees/addPayHeaddetails/{id}","/api/payHeads/{payHeadId}","/api/attendance/employee/attendance/{empId}/{date}")
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+//                .csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+//                        .ignoringRequestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save",
+//                                "/api/plan/getAll","/api/users/add-job-details/{userId}",
+//                                "/api/users/holiday/{userId}","/api/users/employeedetails/{userId}",
+//                                "/api/users/payHeads/{userId}","/api/users/attendance/{userId}","/api/employees/{id}",
+//                                "/api/JobDetails/{id}","/api/employees/addPayHeaddetails/{id}","/api/payHeads/{payHeadId}")
+//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .csrf(csrf->csrf.disable())
+             //   .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
                 .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
@@ -68,7 +69,7 @@ public class ProjectSecurityConfig {
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(POST,"/api/plan/save/**").hasRole("ADMIN")
+                        .requestMatchers(POST,"/api/plan/save/**","/api/users/allUsers").hasRole("ADMIN")
                         .requestMatchers("/api/clients/save/Employee/{id}",
                                 "/api/JobDetails/addJob/{user_Id}","/api/JobDetails/{id}","/api/JobDetails/update/{jobId}","/api/JobDetails/delete/{id}",
                                 "/api/users/add-job-details/{userId}","/api/users/holiday/{userId}",
@@ -81,11 +82,11 @@ public class ProjectSecurityConfig {
                                 "/api/payHeads/{payHeadId}","/api/payHeads/user/{userId}",
                                 "/api/clients/save/Employee/{id}",
                                 "/api/employees/{id}","/api/employees/update/{id}","/api/employees/addPayHeaddetails/{id}","/api/employees/delete/{id}",
-                                "/api/leaveApproval/status/{id}",
+                                "/api/leaveApproval/status/{id}","/api/addPayHeadsToEmployee/employeeData/{empId}",
                                 "/api/candidates/update-Details/{user_id}").hasRole("HR")
-                        .requestMatchers( "/api/attendance/employee/{empId}","/api/attendance/employee/attendance/{empId}/{date}","/api/attendance/update/{id}",
-                                "/api/leaveApproval/employee/{empId}").hasRole("EMPLOYEE")
-                        .requestMatchers("/api/users/allUsers").hasAnyRole("HR","ADMIN")
+                            .requestMatchers( "/api/attendance/employee/{empId}","/api/attendance/employee/attendance/{empId}/{date}","/api/attendance/update/{id}",
+                                "/api/leaveApproval/employee/{empId}","/api/employees/attedence/{id}","/api/employees/leave/{id}").hasRole("EMPLOYEE")
+                        // .requestMatchers("/api/users/allUsers").hasAnyRole("HR","ADMIN")
 
                         .requestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save", "/api/plan/getAll").permitAll());
         http.formLogin(withDefaults());

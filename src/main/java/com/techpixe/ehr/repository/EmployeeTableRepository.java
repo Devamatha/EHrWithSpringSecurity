@@ -6,13 +6,14 @@ import com.techpixe.ehr.entity.EmployeeTable;
 import com.techpixe.ehr.entity.LeaveApprovalTable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface EmployeeTableRepository extends JpaRepository<EmployeeTable, Long> {
     //EmployeeTable findByContactNo(Long contactNo);
 
-  //  EmployeeTable findByEmailId(String emailId);
+    //  EmployeeTable findByEmailId(String emailId);
 
     @Query("SELECT aphte FROM AddPayHeadsToEmployee aphte WHERE aphte.employeeTable.id=:id")
     List<AddPayHeadsToEmployee> findAddPayHeadsToEmployeeByUserId(Long id);
@@ -21,9 +22,21 @@ public interface EmployeeTableRepository extends JpaRepository<EmployeeTable, Lo
             + "FROM EmployeeTable e " + "JOIN e.user u " + "JOIN e.addPayHeadsToEmployee aphte " + "WHERE e.id = :id")
     List<Object[]> findEmployeeWithPayHeads(Long id);
 
+
     @Query("SELECT a FROM Attendance a WHERE a.employeeTable.id=:id")
     List<Attendance> findAttendanceById(Long id);
 
     @Query("SELECT lt FROM LeaveApprovalTable lt WHERE lt.employeeTable.id=:id")
     List<LeaveApprovalTable> findLeaveapprovalTableById(Long id);
+
+
+    @Query("SELECT e.id FROM EmployeeTable e WHERE e.clients.id = :clientId")
+    List<Long> findEmployeeIdsByClientId(@Param("clientId") Long clientId);
+
+    // In EmployeeTableRepository.java
+    @Query("SELECT e.clients.id FROM EmployeeTable e WHERE e.id = :id")
+    Long findClientIdByEmployeeId(@Param("id") Long id);
+
+
+
 }

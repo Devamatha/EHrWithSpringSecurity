@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -17,20 +18,12 @@ public class AttedenceController {
 
     @Autowired
     private AttendanceService attendanceService;
-    @Autowired
-    private EmployeeTableRepository employeeTableRepository;
+
 
     // Create a new Attedence
     @PostMapping("/employee/{empId}")
-    public ResponseEntity<Attendance> createAttendance(@PathVariable Long empId, @RequestBody Attendance attendance) {
-
-        EmployeeTable employeeTable = employeeTableRepository.findById(empId)
-                .orElseThrow(() -> new RuntimeException(empId + "is not present"));
-        attendance.setEmployeeTable(employeeTable);
-        attendance.setName(employeeTable.getClients().getFullName());
-        attendance.setEmpCode(employeeTable.getEmpCode());
-
-        Attendance createdAttedence = attendanceService.createAttendance(attendance);
+    public ResponseEntity<Attendance> createAttendance(@PathVariable Long empId, @RequestParam LocalTime punchIn, @RequestParam String punchInMessage,@RequestParam LocalDate date) {
+        Attendance createdAttedence = attendanceService.createAttendance(empId,punchIn,punchInMessage,date);
         return ResponseEntity.ok(createdAttedence);
     }
 
@@ -45,8 +38,18 @@ public class AttedenceController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Attendance> updateAttendance(@PathVariable Long id, @RequestBody Attendance attedenceDetails) {
-        Attendance updatedAttedence = attendanceService.updateAttendance(id, attedenceDetails);
+    public ResponseEntity<Attendance> updateAttendance(@PathVariable Long id,@RequestParam LocalTime punchOut,
+                                                     @RequestParam  String punchOutMessage,
+                                                     @RequestParam  LocalTime punchIn,
+                                                    @RequestParam   String  punchInMessage,
+                                                   @RequestParam    LocalDate  date,
+                                                     @RequestParam  String   name) {
+        Attendance updatedAttedence = attendanceService.updateAttendance(id, punchOut,
+                punchOutMessage,
+                punchIn,
+                punchInMessage,
+                date,
+                name);
         return ResponseEntity.ok(updatedAttedence);
     }
 

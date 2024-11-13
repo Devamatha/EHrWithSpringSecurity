@@ -72,6 +72,7 @@ public class ClientsController {
         }
 
         role = authenticationResponse.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+       // System.err.println(role + "authenticationResponse");
 
         if (role.equals("ROLE_EMPLOYEE")) {
             List<Long> dataId = employeeTableRepository.findEmployeeIdsByClientId(id);

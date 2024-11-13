@@ -24,7 +24,7 @@ public class LeaveApprovalTable {
     private String type;
     private String status;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference
+    @JsonBackReference(value = "employee-leave")
     @JoinColumn(name = "empId")
     private EmployeeTable employeeTable;
 }

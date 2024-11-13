@@ -2,6 +2,7 @@ package com.techpixe.ehr.serviceimpl;
 
 import com.techpixe.ehr.dto.EmployeePayHeadDTO;
 import com.techpixe.ehr.entity.*;
+import com.techpixe.ehr.repository.ClientsRepository;
 import com.techpixe.ehr.repository.EmployeeTableRepository;
 import com.techpixe.ehr.repository.UserRepository;
 import com.techpixe.ehr.service.EmployeeTableService;
@@ -24,6 +25,9 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
     private EmployeeTableRepository employeeTableRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ClientsRepository clientsRepository;
     @Autowired
     private UserServiceImpl userServiceImpl;
 
@@ -147,6 +151,9 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
     }
 
     public void deleteEmployee(Long id) {
+     Long clientId=  employeeTableRepository.findClientIdByEmployeeId(id);
+    // System.err.println(clientId);
+        clientsRepository.deleteById(clientId);
         employeeTableRepository.deleteById(id);
     }
 
@@ -161,7 +168,7 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
         EmployeePayHeadDTO dto = new EmployeePayHeadDTO();
 
         if (!results.isEmpty()) {
-            Object[] result = results.get(0); // Get the first result
+            Object[] result = results.get(0);
             dto.setEmployeeFullName((String) result[0]);
             dto.setCompanyName((String) result[1]);
             dto.setAuthorizedCompanyName((String) result[2]);
@@ -172,7 +179,7 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
                 AddPayHeadsToEmployee payHead = (AddPayHeadsToEmployee) row[5];
                 payHeads.add(new AddPayHeadsToEmployee(payHead.getId(), payHead.getSelectedPayHead(),
                         payHead.getSelectedPayHeadType(), payHead.getPayHeadAmount(), payHead.getEmpCode(),
-                        payHead.getEmpName(), payHead.getEmployeeTable())); // Populate only pay head ID for now
+                        payHead.getEmpName(), payHead.getEmployeeTable()));
             }
             dto.setPayHeads(payHeads);
         }

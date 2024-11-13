@@ -55,7 +55,7 @@ public class HR {
     private List<PersonalInformation> personalInformation = new ArrayList<>();
 
     @JsonIgnore
-    @JsonManagedReference
+    @JsonManagedReference(value = "user-employee")
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<EmployeeTable> employeeTables = new ArrayList<>();
 

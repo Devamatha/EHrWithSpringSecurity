@@ -51,24 +51,26 @@ public class EmployeeTable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_Id")
-    @JsonBackReference
+    @JsonBackReference(value = "user-employee")
     private HR user;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference(value = "clients-employee")
     @JoinColumn(name = "clients_id")
     private Clients clients;
 
     @JsonIgnore
-    @JsonManagedReference
+    @JsonManagedReference(value = "employee-payhead")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "employeeTable")
     private List<AddPayHeadsToEmployee> addPayHeadsToEmployee = new ArrayList<>();
+
     @JsonIgnore
-    @JsonManagedReference
+    @JsonManagedReference(value = "employee-attendance")
     @OneToMany(mappedBy = "employeeTable", fetch = FetchType.EAGER)
     private List<Attendance> attendance = new ArrayList<>();
+
     @JsonIgnore
-    @JsonManagedReference
+    @JsonManagedReference(value = "employee-leave")
     @OneToMany(mappedBy = "employeeTable", fetch = FetchType.EAGER)
     private List<LeaveApprovalTable> leaveapprovalTable = new ArrayList<>();
 
