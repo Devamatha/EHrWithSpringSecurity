@@ -41,7 +41,6 @@ public class SubscriptionCleaner {
             SubscriptionPlan latestSubscription = subscriptionPlanRepository.findById(subscriptions).orElseThrow(() -> new RuntimeException(subscriptions + " Subscription plan not found"));
             // System.err.println(latestSubscription+"latestSubscription");
             if (latestSubscription.getEndDate() != null && latestSubscription.getEndDate().isBefore(LocalDate.now())) {
-                // System.out.println("inside if block");
                 user.setActive(false);
                 userRepository.save(user);
                 List<EmployeeTable> employeeTables = user.getEmployeeTables();

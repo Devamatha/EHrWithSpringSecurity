@@ -11,6 +11,7 @@ import com.techpixe.ehr.service.ClientsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -112,6 +113,46 @@ public class ClientsServiceImpl implements ClientsService {
 
             }
             return registerDto;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+@Override
+    public Clients registerHRAndAdmin(String fullName, String email, Long mobileNumber, String role, MultipartFile logo, String companyName, String authorizedCompanyName, String address){
+        try {
+            String password = userServiceImpl.generatePassword();
+            HR hr = new HR();
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            Clients clients = new Clients();
+            clients.setFullName(fullName);
+            clients.setEmail(email);
+            clients.setMobileNumber(mobileNumber);
+            clients.setRole(role);
+            clients.setPassword(bCryptPasswordEncoder.encode(password));
+            clients.setCreatedAt(LocalDate.now());
+            clientsRepository.save(clients);
+            if (clients.getRole().equals("ROLE_HR")) {
+                Clients ClientId = clientsRepository.findById(clients.getId()).orElseThrow(() -> new RuntimeException("Client not found"));
+                hr.setAuthorizedCompanyName(authorizedCompanyName);
+                hr.setCompanyName(companyName);
+                hr.setAddress(address);
+                hr.setClients(ClientId);
+                hr.setLogo(logo.getBytes());
+                hr.setActive(true);
+                userServiceImpl.sendmail(fullName, email, mobileNumber, password);
+                userRepository.save(hr);
+                System.err.println(hr.getUser_Id()+"hr.getUser_Id()");
+                clients.setId(hr.getUser_Id());
+            }
+
+            if (clients.getRole().equals("ROLE_ADMIN")) {
+                userServiceImpl.sendmail(fullName, email, mobileNumber, password);
+
+            }
+
+
+            return clients;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

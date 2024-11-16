@@ -32,10 +32,10 @@ public class SubscriptionPlan {
     @Column(nullable = true)
     private LocalDate endDate;
 
-    @Column(length = 1000)
+    @Column(length = 1000,nullable = true)
     private String description;
 
-    @Column(length = 1000)
+    @Column(length = 1000,nullable = true)
     private String additionalFeatures;
 
     private long totalResumes;

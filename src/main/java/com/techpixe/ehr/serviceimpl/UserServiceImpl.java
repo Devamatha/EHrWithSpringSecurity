@@ -1,25 +1,15 @@
 package com.techpixe.ehr.serviceimpl;
 
-import com.techpixe.ehr.dto.ErrorResponseDto;
 import com.techpixe.ehr.entity.*;
-import com.techpixe.ehr.repository.SubscriptionPlanRepository;
 import com.techpixe.ehr.repository.UserRepository;
 import com.techpixe.ehr.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -52,7 +42,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     public void sendmail(String fullName, String email, Long mobileNumber, String password) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(fromMail);
@@ -69,22 +58,80 @@ public class UserServiceImpl implements UserService {
     // ***************CHANGE PASSWORD*************************
 
 
-
     @Override
     public Optional<HR> getByUserId(Long user_Id) {
         return userRepository.findById(user_Id);
     }
 
     @Override
-    public List<HR> allUser() {
+    public List<Map<String, Object>> allUser() {
         List<HR> fetchAllUsers = userRepository.findAll();
-        return fetchAllUsers;
+        List<Map<String, Object>> response= new ArrayList<>();
+
+        for (HR hr : fetchAllUsers) {
+            Map<String, Object> employeeData = new HashMap<>();
+
+            employeeData.put("user_Id",hr.getUser_Id());
+            employeeData.put("companyName",hr.getCompanyName());
+            employeeData.put("authorizedCompanyName",hr.getAuthorizedCompanyName());
+            employeeData.put("fullName",hr.getClients().getFullName());
+            employeeData.put("email",hr.getClients().getEmail());
+            employeeData.put("mobileNumber",hr.getClients().getMobileNumber());
+            employeeData.put("address",hr.getAddress());
+            response.add(employeeData);
+
+        }
+        return response;
     }
 
     @Override
     public List<EmployeeTable> getEmployeesByUserId(Long userId) {
         HR user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.getEmployeeTables();
         return user.getEmployeeTables();
+    }
+
+    @Override
+    public List<Map<String, Object>> getEmployeesByUser(Long userId) {
+        HR user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        List<EmployeeTable> data = user.getEmployeeTables();
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (EmployeeTable employeeDetails : data) {
+            Map<String, Object> employeeData = new HashMap<>();
+            employeeData.put("id", employeeDetails.getId());
+
+            if (employeeDetails.getClients() != null) {
+                employeeData.put("fullName", employeeDetails.getClients().getFullName());
+                employeeData.put("emailId", employeeDetails.getClients().getEmail());
+                employeeData.put("contactNo", employeeDetails.getClients().getMobileNumber());
+
+            }
+            employeeData.put("empCode", employeeDetails.getEmpCode());
+            employeeData.put("dob", employeeDetails.getDob());
+            employeeData.put("gender", employeeDetails.getGender());
+            employeeData.put("maritalStatus", employeeDetails.getMaritalStatus());
+            employeeData.put("nationality", employeeDetails.getNationality());
+            employeeData.put("address", employeeDetails.getAddress());
+            employeeData.put("city", employeeDetails.getCity());
+            employeeData.put("state", employeeDetails.getState());
+            employeeData.put("country", employeeDetails.getCountry());
+            employeeData.put("identification", employeeDetails.getIdentification());
+            employeeData.put("idNumber", employeeDetails.getIdNumber());
+            employeeData.put("employeeType", employeeDetails.getEmployeeType());
+            employeeData.put("joiningDate", employeeDetails.getJoiningDate());
+            employeeData.put("bloodGroup", employeeDetails.getBloodGroup());
+            employeeData.put("designation", employeeDetails.getDesignation());
+            employeeData.put("department", employeeDetails.getDepartment());
+            employeeData.put("panNo", employeeDetails.getPanNo());
+            employeeData.put("bankName", employeeDetails.getBankName());
+            employeeData.put("bankAccountNo", employeeDetails.getBankAccountNo());
+            employeeData.put("iFSCCode", employeeDetails.getIFSCCode());
+            employeeData.put("pfAccountNo", employeeDetails.getPfAccountNo());
+            response.add(employeeData);
+
+
+        }
+        return response;
     }
 
     @Override

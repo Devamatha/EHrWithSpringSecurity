@@ -6,14 +6,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
     Optional<HR> getByUserId(Long user_Id);
 
-    List<HR> allUser();
+    List<Map<String, Object>> allUser();
 
     List<EmployeeTable> getEmployeesByUserId(Long userId);
+    List<Map<String, Object>> getEmployeesByUser(Long userId);
 
     List<AddJobDetails> getAddJobDetailsByUserId(Long userId);
 

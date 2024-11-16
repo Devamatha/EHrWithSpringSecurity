@@ -4,7 +4,6 @@ import com.techpixe.ehr.entity.*;
 import com.techpixe.ehr.repository.UserRepository;
 import com.techpixe.ehr.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -20,7 +20,7 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
     private UserRepository userRepository;
 
@@ -44,10 +44,10 @@ public class UserController {
     }
 
     @GetMapping("/allUsers")
-    public ResponseEntity<List<HR>> allUsers() {
-        List<HR> allUsers = userService.allUser();
-        return new ResponseEntity<List<HR>>(allUsers, HttpStatus.OK);
+    public List<Map<String, Object>> allUsers() {
+        List<Map<String, Object>> allUsers = userService.allUser();
 
+        return allUsers;
     }
 
 
@@ -62,8 +62,8 @@ public class UserController {
     }
 
     @GetMapping("/employeedetails/{userId}")
-    public List<EmployeeTable> getEmployeeTableByUserId(@PathVariable Long userId) {
-        return userService.getEmployeesByUserId(userId);
+    public List<Map<String, Object>> getEmployeeTableByUserId(@PathVariable Long userId) {
+        return userService.getEmployeesByUser(userId);
     }
 
     @GetMapping("/holiday/{userId}")

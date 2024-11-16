@@ -4,8 +4,10 @@ import com.techpixe.ehr.constant.ApplicationConstants;
 import com.techpixe.ehr.dto.LoginRequestDTO;
 import com.techpixe.ehr.dto.LoginResponseDTO;
 import com.techpixe.ehr.dto.RegisterDto;
+import com.techpixe.ehr.entity.Clients;
 import com.techpixe.ehr.repository.ClientsRepository;
 import com.techpixe.ehr.repository.EmployeeTableRepository;
+import com.techpixe.ehr.repository.UserRepository;
 import com.techpixe.ehr.service.ClientsService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -19,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -41,16 +44,26 @@ public class ClientsController {
     @Autowired
     public EmployeeTableRepository employeeTableRepository;
 
+    @Autowired
+    public UserRepository userRepository;
+
     @PostMapping("/save/Employee/{id}")
     public ResponseEntity<?> saveEmployee(@RequestBody RegisterDto registerDto, @PathVariable Long id) {
         clientsService.registerEmployee(registerDto, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(registerDto);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/savede")
     public ResponseEntity<?> saveClient(@RequestBody RegisterDto registerDto) {
         clientsService.registerClients(registerDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(registerDto);
+    }
+
+
+    @PostMapping("/save")
+    public ResponseEntity<?> saveHRAndAdmin(@RequestParam String fullName,@RequestParam String email,@RequestParam Long mobileNumber,@RequestParam String role,@RequestParam(required = false) MultipartFile logo,@RequestParam(required = false) String companyName,@RequestParam(required = false) String authorizedCompanyName,@RequestParam(required = false) String address) {
+      Clients register = clientsService.registerHRAndAdmin(fullName, email, mobileNumber, role, logo, companyName, authorizedCompanyName, address);
+        return ResponseEntity.status(HttpStatus.CREATED).body(register);
     }
 
     @PostMapping("/login")
@@ -77,6 +90,11 @@ public class ClientsController {
             List<Long> dataId = employeeTableRepository.findEmployeeIdsByClientId(id);
             id = dataId.get(0);
         }
+if(role.equals("ROLE_HR")) {
+    List<Long> dataId = userRepository.findHRIdsByClientId(id);
+    id = dataId.get(0);
+
+}
 
 
         if (null != authenticationResponse && authenticationResponse.isAuthenticated()) {

@@ -52,5 +52,10 @@ public interface UserRepository extends JpaRepository<HR, Long> {
     HR findById(long userId);
 
 
+    @Query("SELECT h.user_Id FROM HR h WHERE h.clients.id = :clientId")
+    List<Long> findHRIdsByClientId(@Param("clientId") Long clientId);
+
+
+
 }
 

@@ -167,21 +167,25 @@ public class EmployeeTableServiceImpl implements EmployeeTableService {
         List<Object[]> results = employeeTableRepository.findEmployeeWithPayHeads(id);
         EmployeePayHeadDTO dto = new EmployeePayHeadDTO();
 
+
         if (!results.isEmpty()) {
             Object[] result = results.get(0);
-            dto.setEmployeeFullName((String) result[0]);
-            dto.setCompanyName((String) result[1]);
-            dto.setAuthorizedCompanyName((String) result[2]);
-            dto.setAddress((String) result[3]);
-            dto.setLogo((byte[]) result[4]);
+           // dto.setEmployeeFullName((String) result[0]);
+            dto.setCompanyName((String) result[0]);
+            dto.setAuthorizedCompanyName((String) result[1]);
+            dto.setAddress((String) result[2]);
+            dto.setLogo((byte[]) result[3]);
             List<AddPayHeadsToEmployee> payHeads = new ArrayList<>();
             for (Object[] row : results) {
-                AddPayHeadsToEmployee payHead = (AddPayHeadsToEmployee) row[5];
+                AddPayHeadsToEmployee payHead = (AddPayHeadsToEmployee) row[4];
                 payHeads.add(new AddPayHeadsToEmployee(payHead.getId(), payHead.getSelectedPayHead(),
                         payHead.getSelectedPayHeadType(), payHead.getPayHeadAmount(), payHead.getEmpCode(),
                         payHead.getEmpName(), payHead.getEmployeeTable()));
             }
+
             dto.setPayHeads(payHeads);
+            dto.setEmployeeFullName(dto.getPayHeads().get(0).getEmpName());
+
         }
 
         return dto;

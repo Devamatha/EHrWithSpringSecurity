@@ -30,6 +30,7 @@ import com.techpixe.ehr.filter.RequestValidationBeforeFilter;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -69,7 +70,8 @@ public class ProjectSecurityConfig {
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(POST,"/api/plan/save/**","/api/users/allUsers").hasRole("ADMIN")
+                      //  .requestMatchers("/api/users/allUsers").authenticated()
+                        .requestMatchers("/api/plan/save/**","/api/users/allUsers").hasRole("ADMIN")
                         .requestMatchers("/api/clients/save/Employee/{id}",
                                 "/api/JobDetails/addJob/{user_Id}","/api/JobDetails/{id}","/api/JobDetails/update/{jobId}","/api/JobDetails/delete/{id}",
                                 "/api/users/add-job-details/{userId}","/api/users/holiday/{userId}",
@@ -78,17 +80,16 @@ public class ProjectSecurityConfig {
                                 "/api/users/payHeads/{userId}","/api/payHeads/delete/{payHeadId}","/api/payHeads/update/{payHeadId}",
                                 "/api/users/attendance/{userId}","/api/users/leave-approvals/{userId}",
                                 "/api/users/personalInformation/{userId}","/api/candidates/upload-resume/{user_id}",
-                                "/api/attendance/update/{id}",
+
                                 "/api/payHeads/{payHeadId}","/api/payHeads/user/{userId}",
-                                "/api/clients/save/Employee/{id}",
+                                //"/api/clients/save/Employee/{id}",
                                 "/api/employees/{id}","/api/employees/update/{id}","/api/employees/addPayHeaddetails/{id}","/api/employees/delete/{id}",
                                 "/api/leaveApproval/status/{id}","/api/addPayHeadsToEmployee/employeeData/{empId}",
                                 "/api/candidates/update-Details/{user_id}").hasRole("HR")
-                            .requestMatchers( "/api/attendance/employee/{empId}","/api/attendance/employee/attendance/{empId}/{date}","/api/attendance/update/{id}",
+                            .requestMatchers( "/api/attendance/employee/{empId}","/api/attendance/employee/attendance/{empId}/{date}","/api/attendance/update/{id}","/api/notifications/employee/{employeeId}",
                                 "/api/leaveApproval/employee/{empId}","/api/employees/attedence/{id}","/api/employees/leave/{id}").hasRole("EMPLOYEE")
-                        // .requestMatchers("/api/users/allUsers").hasAnyRole("HR","ADMIN")
 
-                        .requestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save", "/api/plan/getAll").permitAll());
+                        .requestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save", "/api/plan/getAll","/api/oderId/save/oderId","/api/subscriptions/save/{userId}","/api/candidates/exam/{examId}","/api/candidates/{id}/questions","/api/interviews/save-answers/{candidate_Id}","/api/candidates/verify").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));

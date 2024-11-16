@@ -58,7 +58,7 @@ public class EmployeeTableController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<EmployeeTable> updateEmployee(@PathVariable Long id,
-                                                        @RequestParam(required = false) String empCode,
+                                                       @RequestParam(required = false) String empCode,
                                                         @RequestParam(required = false) Date dob, @RequestParam(required = false) String gender,
                                                         @RequestParam(required = false) String maritalStatus, @RequestParam(required = false) String nationality,
                                                         @RequestParam(required = false) String address, @RequestParam(required = false) String city,
