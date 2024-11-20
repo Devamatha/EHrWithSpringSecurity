@@ -82,42 +82,7 @@ public class ClientsServiceImpl implements ClientsService {
         }
     }
 
-    @Override
-    public RegisterDto registerClients(RegisterDto registerDto) {
-        try {
-            String password = userServiceImpl.generatePassword();
-            HR hr = new HR();
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-            Clients clients = new Clients();
-            clients.setFullName(registerDto.getFullName());
-            clients.setEmail(registerDto.getEmail());
-            clients.setMobileNumber(registerDto.getMobileNumber());
-            clients.setRole(registerDto.getRole());
-            clients.setPassword(bCryptPasswordEncoder.encode(password));
-            clients.setCreatedAt(LocalDate.now());
-            clientsRepository.save(clients);
-            if (registerDto.getRole().equals("ROLE_HR")) {
-                Clients ClientId = clientsRepository.findById(clients.getId()).orElseThrow(() -> new RuntimeException("Client not found"));
-                hr.setAuthorizedCompanyName(registerDto.getAuthorizedCompanyName());
-                hr.setCompanyName(registerDto.getCompanyName());
-                hr.setAddress(registerDto.getAddress());
-                hr.setClients(ClientId);
-                //hr.setLogo(logo.getBytes());
-                hr.setActive(true);
-                userServiceImpl.sendmail(registerDto.getFullName(), registerDto.getEmail(), registerDto.getMobileNumber(), password);
-                userRepository.save(hr);
-            }
 
-            if (registerDto.getRole().equals("ROLE_ADMIN")) {
-                userServiceImpl.sendmail(registerDto.getFullName(), registerDto.getEmail(), registerDto.getMobileNumber(), password);
-
-            }
-            return registerDto;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 @Override
     public Clients registerHRAndAdmin(String fullName, String email, Long mobileNumber, String role, MultipartFile logo, String companyName, String authorizedCompanyName, String address){
         try {

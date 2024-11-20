@@ -22,7 +22,8 @@ public class SubscriptionCleaner {
 
     @Autowired
     private EmployeeTableRepository employeeTableRepository;
-    // @Scheduled(cron = "0 0 0 0 0 ?")
+   //  @Scheduled(cron = "0 0 0 0 0 ?")
+   //@Scheduled(cron = "0 * * * * ?")
 
     @Scheduled(cron = "0 50 14 * * ?")
 

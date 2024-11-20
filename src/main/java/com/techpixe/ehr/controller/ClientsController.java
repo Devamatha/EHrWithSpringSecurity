@@ -53,11 +53,7 @@ public class ClientsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(registerDto);
     }
 
-    @PostMapping("/savede")
-    public ResponseEntity<?> saveClient(@RequestBody RegisterDto registerDto) {
-        clientsService.registerClients(registerDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(registerDto);
-    }
+
 
 
     @PostMapping("/save")

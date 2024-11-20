@@ -36,7 +36,7 @@ public class Clients {
     @OneToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private List<HR> hrList = new ArrayList<>();
 
-    //@JsonIgnore
+    @JsonIgnore
     @JsonManagedReference(value = "clients-employee")
     @OneToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private List<EmployeeTable> employeeTableList = new ArrayList<>();

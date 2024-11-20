@@ -52,7 +52,7 @@ public class UserController {
 
 
     @GetMapping("/{userId}/employees")
-    public List<EmployeeTable> getEmployeesByUserId(@PathVariable Long userId) {
+    public List<Map<String, Object>> getEmployeesByUserId(@PathVariable Long userId) {
         return userService.getEmployeesByUserId(userId);
     }
 

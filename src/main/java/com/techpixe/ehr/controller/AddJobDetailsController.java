@@ -27,8 +27,9 @@ public class AddJobDetailsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AddJobDetails> getJobDetailsById(@PathVariable("id") Long jobId) {
-        Optional<AddJobDetails> jobDetails = addJobDetailsService.getJobDetailsById(jobId);
-        return jobDetails.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        AddJobDetails jobDetails = addJobDetailsService.getJobDetailsById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found with ID: " + jobId));
+        return ResponseEntity.ok(jobDetails);
     }
 
     @GetMapping

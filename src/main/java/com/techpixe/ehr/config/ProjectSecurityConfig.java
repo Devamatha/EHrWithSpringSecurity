@@ -25,13 +25,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import com.techpixe.ehr.filter.RequestValidationBeforeFilter;
 
-        
+
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -45,7 +44,9 @@ public class ProjectSecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                       // config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        config.setAllowedOrigins(Collections.singletonList("https://smartaihr.com"));
+
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
@@ -78,18 +79,19 @@ public class ProjectSecurityConfig {
                                 "/api/holidays/user/{userId}","/api/holidays/update/{holidayId}","/api/holidays/delete/{id}","/api/holidays/{holidayId}",
                                 "/api/users/employeedetails/{userId}",
                                 "/api/users/payHeads/{userId}","/api/payHeads/delete/{payHeadId}","/api/payHeads/update/{payHeadId}",
-                                "/api/users/attendance/{userId}","/api/users/leave-approvals/{userId}",
+                                "/api/users/attendance/{userId}","/api/users/leave-approvals/{userId}","/api/users/{userId}/employees",
                                 "/api/users/personalInformation/{userId}","/api/candidates/upload-resume/{user_id}",
 
-                                "/api/payHeads/{payHeadId}","/api/payHeads/user/{userId}",
-                                //"/api/clients/save/Employee/{id}",
+                                "/api/payHeads/{payHeadId}","/api/payHeads/user/{userId}","/api/subscriptions/upgrade/{userId}",
+                               
                                 "/api/employees/{id}","/api/employees/update/{id}","/api/employees/addPayHeaddetails/{id}","/api/employees/delete/{id}",
-                                "/api/leaveApproval/status/{id}","/api/addPayHeadsToEmployee/employeeData/{empId}",
+                                "/api/leaveApproval/status/{id}","/api/addPayHeadsToEmployee/employeeData/{empId}","/api/notifications/send/{userId}",
                                 "/api/candidates/update-Details/{user_id}").hasRole("HR")
                             .requestMatchers( "/api/attendance/employee/{empId}","/api/attendance/employee/attendance/{empId}/{date}","/api/attendance/update/{id}","/api/notifications/employee/{employeeId}",
                                 "/api/leaveApproval/employee/{empId}","/api/employees/attedence/{id}","/api/employees/leave/{id}").hasRole("EMPLOYEE")
 
-                        .requestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save", "/api/plan/getAll","/api/oderId/save/oderId","/api/subscriptions/save/{userId}","/api/candidates/exam/{examId}","/api/candidates/{id}/questions","/api/interviews/save-answers/{candidate_Id}","/api/candidates/verify").permitAll());
+                        .requestMatchers("/api/users/user", "/api/clients/login", "/api/clients/save", "/api/plan/getAll","/api/oderId/save/oderId","/api/subscriptions/save/{userId}","/api/candidates/exam/{examId}",
+                        "/api/candidates/{id}/questions","/api/interviews/save-answers/{candidate_Id}","/api/candidates/verify").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));

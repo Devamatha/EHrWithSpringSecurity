@@ -2,6 +2,7 @@ package com.techpixe.ehr.interceptor;
 
 import com.techpixe.ehr.entity.EmployeeTable;
 import com.techpixe.ehr.entity.HR;
+import com.techpixe.ehr.exceptionhandle.PaymentRequiredException;
 import com.techpixe.ehr.repository.EmployeeTableRepository;
 import com.techpixe.ehr.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,6 @@ public class SubscriptionInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // System.out.println("Hai i am in preHandle");
 
         String userId = request.getHeader("user_Id");
 
@@ -32,8 +32,9 @@ public class SubscriptionInterceptor implements HandlerInterceptor {
             if (userOptional.isPresent() && !userOptional.get().isActive()) {
 
 
-                response.sendError(HttpServletResponse.SC_PAYMENT_REQUIRED, "User subscription has expired.Please Upgrade your subscription.");
-                return false;
+              //  response.sendError(HttpServletResponse.SC_PAYMENT_REQUIRED, "User subscription has expired.Please Upgrade your subscription.");
+            	throw new PaymentRequiredException("User subscription has expired.Please Upgrade your subscription.");
+              // return false;
             }
         }
         String employeeId = request.getHeader("Id");
@@ -41,8 +42,9 @@ public class SubscriptionInterceptor implements HandlerInterceptor {
 
             Optional<EmployeeTable> employeeTableOptional = employeeTableRepository.findById(Long.valueOf(employeeId));
             if (employeeTableOptional.isPresent() && !employeeTableOptional.get().isActive()) {
-                response.sendError(HttpServletResponse.SC_PAYMENT_REQUIRED, "Employee subscription has expired.Please Upgrade your subscription.");
-                return false;
+                //response.sendError(HttpServletResponse.SC_PAYMENT_REQUIRED, "Employee subscription has expired.Please Upgrade your subscription.");
+            	throw new PaymentRequiredException("Employee subscription has expired.Please Upgrade your subscription.");
+             //  return false;
             }
         }
 

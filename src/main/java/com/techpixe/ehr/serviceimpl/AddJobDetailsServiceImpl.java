@@ -36,6 +36,7 @@ public class AddJobDetailsServiceImpl implements AddJobDetailsService {
         return addJobDetailsRepository.findById(jobId);
     }
 
+
     @Override
     public List<AddJobDetails> getAllJobDetails() {
         return addJobDetailsRepository.findAll();

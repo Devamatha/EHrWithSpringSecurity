@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -38,9 +39,9 @@ public class NotificationController {
 //    }
 
     @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<List<Notification>> getNotificationsForEmployee(@PathVariable Long employeeId) {
-        List<Notification> notifications = notificationService.getNotificationsForEmployee(employeeId);
-        return ResponseEntity.ok(notifications);
+    public List<Map<String, Object>> getNotificationsForEmployee(@PathVariable Long employeeId) {
+    	List<Map<String, Object>> notifications = notificationService.getNotificationsForEmployee(employeeId);
+        return notifications;
     }
 
     @PutMapping("/markAsRead/{notificationId}")

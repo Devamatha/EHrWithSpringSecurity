@@ -14,7 +14,7 @@ public interface UserService {
 
     List<Map<String, Object>> allUser();
 
-    List<EmployeeTable> getEmployeesByUserId(Long userId);
+    List<Map<String, Object>> getEmployeesByUserId(Long userId);
     List<Map<String, Object>> getEmployeesByUser(Long userId);
 
     List<AddJobDetails> getAddJobDetailsByUserId(Long userId);
