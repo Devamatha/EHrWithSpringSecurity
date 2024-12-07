@@ -8,57 +8,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payHeads")
 public class PayHeadsController {
 
-    @Autowired
-    private PayHeadsService payHeadsService;
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private PayHeadsService payHeadsService;
+	@Autowired
+	private UserRepository userRepository;
 
-    // Create a new PayHead
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<PayHeads> createPayHead(@PathVariable Long userId, @RequestBody PayHeads payHead) {
-        HR user_Id = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException(userId + " is not found"));
-        payHead.setUser(user_Id);
-        payHead.setPayHeadName(payHead.getPayHeadName());
-        payHead.setPayHeadType(payHead.getPayHeadType());
-        payHead.setPayHeadDescription(payHead.getPayHeadDescription());
-        PayHeads createdPayHead = payHeadsService.createPayHead(payHead);
-        return ResponseEntity.ok(createdPayHead);
-    }
+	// Create a new PayHead
+	@PostMapping("/user/{userId}")
+	public ResponseEntity<Map<String, String>> createPayHead(@PathVariable Long userId, @RequestBody PayHeads payHead)
+			throws Exception {
+		try {
 
-    // Get all PayHeads
-    @GetMapping
-    public List<PayHeads> getAllPayHeads() {
-        return payHeadsService.getAllPayHeads();
-    }
+			HR user_Id = userRepository.findById(userId)
+					.orElseThrow(() -> new RuntimeException(userId + " is not found"));
+			payHead.setUser(user_Id);
+			payHead.setPayHeadName(payHead.getPayHeadName());
+			payHead.setPayHeadType(payHead.getPayHeadType());
+			payHead.setPayHeadDescription(payHead.getPayHeadDescription());
+			payHeadsService.createPayHead(payHead);
+			return ResponseEntity.ok(Collections.singletonMap("message", "PayHead created successfully"));
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+	}
 
-    // Get a PayHead by ID
-    @GetMapping("/{payHeadId}")
-    public ResponseEntity<PayHeads> getPayHeadById(@PathVariable Long payHeadId) {
-        return payHeadsService.getPayHeadById(payHeadId).map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+	@GetMapping("/{payHeadId}")
+	public ResponseEntity<PayHeads> getPayHeadById(@PathVariable Long payHeadId) {
+		return payHeadsService.getPayHeadById(payHeadId).map(ResponseEntity::ok)
+				.orElse(ResponseEntity.notFound().build());
+	}
 
-    // Update a PayHead
-    @PutMapping("/update/{payHeadId}")
-    public ResponseEntity<PayHeads> updatePayHead(@PathVariable Long payHeadId, @RequestParam String payHeadName,
-                                                  @RequestParam String payHeadDescription, @RequestParam String payHeadType) {
+	@PutMapping("/update/{payHeadId}")
+	public ResponseEntity<Map<String, String>> updatePayHead(@PathVariable Long payHeadId,
+			@RequestParam String payHeadName, @RequestParam String payHeadDescription,
+			@RequestParam String payHeadType) {
 
-        PayHeads updatedPayHead = payHeadsService.updatePayHead(payHeadId, payHeadName, payHeadDescription,
-                payHeadType);
-        return ResponseEntity.ok(updatedPayHead);
-    }
+		payHeadsService.updatePayHead(payHeadId, payHeadName, payHeadDescription, payHeadType);
+		return ResponseEntity.ok(Collections.singletonMap("message", "PayHead updated successfully"));
+	}
 
-    // Delete a PayHead
-    @DeleteMapping("/delete/{payHeadId}")
-    public ResponseEntity<Void> deletePayHead(@PathVariable Long payHeadId) {
-        payHeadsService.deletePayHead(payHeadId);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/delete/{payHeadId}")
+	public void deletePayHead(@PathVariable Long payHeadId) {
+		payHeadsService.deletePayHead(payHeadId);
+	}
 }

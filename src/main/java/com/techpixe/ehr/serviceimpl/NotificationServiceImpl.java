@@ -36,7 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 		Notification notification = new Notification();
 		notification.setSender(sender);
-		notification.setRecipient(receiver);
+		notification.setEmployeeTable(receiver);
 		notification.setMessageContent(messageContent);
 		notification.setTimestamp(LocalDateTime.now());
 		notification.setReadStatus(false);
@@ -55,7 +55,7 @@ public class NotificationServiceImpl implements NotificationService {
 					.orElseThrow(() -> new RuntimeException("Receiver not found"));
 			Notification notification = new Notification();
 			notification.setSender(sender);
-			notification.setRecipient(receiver);
+			notification.setEmployeeTable(receiver);
 			notification.setMessageContent(messageContent);
 			notification.setTimestamp(LocalDateTime.now());
 			notification.setReadStatus(false);
@@ -69,7 +69,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public List<Map<String, Object>> getNotificationsForEmployee(Long employeeId) {
 		EmployeeTable employee = employeeRepository.findById(employeeId)
 				.orElseThrow(() -> new RuntimeException("Employee not found"));
-		List<Notification> data = notificationRepository.findAllByRecipient(employee);
+		List<Notification> data = notificationRepository.findAllByEmployeeTable(employee);
 		List<Map<String, Object>> response = new ArrayList<>();
 
 		for (Notification notificationdata : data) {
@@ -82,7 +82,6 @@ public class NotificationServiceImpl implements NotificationService {
 			adddata.put("email", notificationdata.getSender().getClients().getEmail());
 			response.add(adddata);
 		}
-		System.err.println(response);
 		return response;
 	}
 

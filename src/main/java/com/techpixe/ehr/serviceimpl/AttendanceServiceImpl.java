@@ -17,70 +17,50 @@ import java.util.Optional;
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
 
-    @Autowired
-    private AttendanceRepository attedenceRepository;
-    @Autowired
-    private EmployeeTableRepository employeeTableRepository;
-    // Create
-    public Attendance createAttendance(Long empId,LocalTime punchIn, String punchInMessage, LocalDate date) {
-        EmployeeTable employeeTable = employeeTableRepository.findById(empId)
-                .orElseThrow(() -> new RuntimeException(empId + " is not present"));
-        Attendance attendance = new Attendance();
-        attendance.setEmployeeTable(employeeTable);
-        attendance.setName(employeeTable.getClients().getFullName());
-        attendance.setEmpCode(employeeTable.getEmpCode());
-        attendance.setAttendance(true);
-        attendance.setPunchIn(punchIn);
-        attendance.setPunchInMessage(punchInMessage);
-        attendance.setDate(date);
-        return attedenceRepository.save(attendance);
-    }
+	@Autowired
+	private AttendanceRepository attedenceRepository;
+	@Autowired
+	private EmployeeTableRepository employeeTableRepository;
 
-    // Read
-    public List<Attendance> getAllAttendances() {
-        return attedenceRepository.findAll();
-    }
+	public Attendance createAttendance(Long empId, LocalTime punchIn, String punchInMessage, LocalDate date) {
+		EmployeeTable employeeTable = employeeTableRepository.findById(empId)
+				.orElseThrow(() -> new RuntimeException(empId + " is not present"));
+		Attendance attendance = new Attendance();
+		attendance.setEmployeeTable(employeeTable);
+		attendance.setName(employeeTable.getClients().getFullName());
+		attendance.setEmpCode(employeeTable.getEmpCode());
+		attendance.setAttendance(true);
+		attendance.setPunchIn(punchIn);
+		attendance.setPunchInMessage(punchInMessage);
+		attendance.setDate(date);
+		return attedenceRepository.save(attendance);
+	}
 
-    public Optional<Attendance> getAttendanceById(Long id) {
-        return attedenceRepository.findById(id);
-    }
+	public Attendance updateAttendance(Long id, LocalTime punchOut, String punchOutMessage, LocalTime punchIn,
+			String punchInMessage, LocalDate date, String name) {
+		Attendance attendance = attedenceRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Attendance not found"));
 
-    // Update
-    public Attendance updateAttendance(Long id,LocalTime punchOut,
-                                      String punchOutMessage,
-                                    LocalTime punchIn,
-                                     String  punchInMessage,
-                                     LocalDate  date,
-                                    String   name) {
-        Attendance attendance = attedenceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Attendance not found"));
+		attendance.setDate(date);
+		attendance.setName(name);
+		attendance.setPunchIn(punchIn);
+		attendance.setPunchOut(punchOut);
+		attendance.setPunchInMessage(punchInMessage);
+		attendance.setPunchOutMessage(punchOutMessage);
+		Duration duration = Duration.between(punchIn, punchOut);
+		long hours = duration.toHours();
+		long minutes = duration.toMinutes() % 60;
+		String formattedWorkingHours = String.format("%02d:%02d", hours, minutes);
+		attendance.setWorkingHours(formattedWorkingHours);
+		attendance.setEmpCode(attendance.getEmpCode());
+		attendance.setEmployeeTable(attendance.getEmployeeTable());
 
-        // Update fields
-        attendance.setDate(date);
-        attendance.setName(name);
-        attendance.setPunchIn(punchIn);
-        attendance.setPunchOut(punchOut);
-        attendance.setPunchInMessage(punchInMessage);
-        attendance.setPunchOutMessage(punchOutMessage);
-        Duration duration = Duration.between(punchIn, punchOut);
-        long hours = duration.toHours();
-        long minutes = duration.toMinutes() % 60;
-        String formattedWorkingHours = String.format("%02d:%02d", hours, minutes);
-        attendance.setWorkingHours(formattedWorkingHours);
-        attendance.setEmpCode(attendance.getEmpCode());
-        attendance.setEmployeeTable(attendance.getEmployeeTable());
+		return attedenceRepository.save(attendance);
+	}
 
-        return attedenceRepository.save(attendance);
-    }
-
-    // Delete
-    public void deleteAttendance(Long id) {
-        attedenceRepository.deleteById(id);
-    }
-
-    @Override
-    public Attendance getAttendanceByDate(Long empId, LocalDate date) {
-        return attedenceRepository.findByEmployeeTableIdAndDate(empId, date);
-    }
+	@Override
+	public Attendance getAttendanceByDate(Long empId, LocalDate date) {
+		return attedenceRepository.findByEmployeeTableIdAndDate(empId, date);
+	}
 
 }

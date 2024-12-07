@@ -10,9 +10,7 @@ import java.util.Optional;
 public interface AttendanceService {
     Attendance createAttendance(Long empId, LocalTime punchIn, String punchInMessage, LocalDate date);
 
-    List<Attendance> getAllAttendances();
 
-    Optional<Attendance> getAttendanceById(Long id);
 
     Attendance updateAttendance(Long id,LocalTime punchOut,
                                 String punchOutMessage,
@@ -21,7 +19,6 @@ public interface AttendanceService {
                                 LocalDate  date,
                                 String   name);
 
-    void deleteAttendance(Long id);
 
     Attendance getAttendanceByDate(Long empId, LocalDate date);
 

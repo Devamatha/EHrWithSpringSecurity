@@ -15,6 +15,8 @@ public interface ClientsRepository extends JpaRepository<Clients, Long> {
 
     @Query("SELECT c.id, c.fullName FROM Clients c WHERE c.email = :email")
     List<Object[]> findIdAndFullNameByEmail(@Param("email") String email);
+    
+
 
     @Query("SELECT c.password, c.role FROM Clients c WHERE c.email = :email")
     List<Object[]> findPasswordAndRoleByEmail(@Param("email") String email);

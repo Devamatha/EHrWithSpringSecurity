@@ -14,12 +14,31 @@ public class AddPayHeadsToEmployeeServiceimpl implements AddPayHeadsToEmployeeSe
     @Autowired
     private AddPayHeadsToEmployeeRepository addPayHeadsToEmployeeRepository;
 
-    // Create
+@Override
     public AddPayHeadsToEmployee createAddPayHeadsToEmployee(AddPayHeadsToEmployee addPayHeadsToEmployee) {
         return addPayHeadsToEmployeeRepository.save(addPayHeadsToEmployee);
     }
+    
+    
+    @Override
+    public AddPayHeadsToEmployee saveOrUpdatePayHead(AddPayHeadsToEmployee addPayHeadsToEmployee) {
+        Optional<AddPayHeadsToEmployee> existingPayHead = 
+            addPayHeadsToEmployeeRepository.findByEmployeeTableAndSelectedPayHead(
+                addPayHeadsToEmployee.getEmployeeTable(), 
+                addPayHeadsToEmployee.getSelectedPayHead()
+            );
 
-    // Read
+        if (existingPayHead.isPresent()) {
+            AddPayHeadsToEmployee payHeadToUpdate = existingPayHead.get();
+            payHeadToUpdate.setPayHeadAmount(addPayHeadsToEmployee.getPayHeadAmount());
+            payHeadToUpdate.setSelectedPayHeadType(addPayHeadsToEmployee.getSelectedPayHeadType());
+            return addPayHeadsToEmployeeRepository.save(payHeadToUpdate);
+        } else {
+            return addPayHeadsToEmployeeRepository.save(addPayHeadsToEmployee);
+        }
+    }
+
+
     public List<AddPayHeadsToEmployee> getAllAddPayHeadsToEmployee() {
         return addPayHeadsToEmployeeRepository.findAll();
     }
@@ -28,13 +47,11 @@ public class AddPayHeadsToEmployeeServiceimpl implements AddPayHeadsToEmployeeSe
         return addPayHeadsToEmployeeRepository.findById(id);
     }
 
-    // Update
     public AddPayHeadsToEmployee updateAddPayHeadsToEmployee(Long id,
                                                              AddPayHeadsToEmployee addPayHeadsToEmployeeDetails) {
         AddPayHeadsToEmployee addPayHeadsToEmployee = addPayHeadsToEmployeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("AddPayHeadsToEmployee not found"));
 
-        // Update fields
         addPayHeadsToEmployee.setSelectedPayHead(addPayHeadsToEmployeeDetails.getSelectedPayHead());
         addPayHeadsToEmployee.setSelectedPayHeadType(addPayHeadsToEmployeeDetails.getSelectedPayHeadType());
         addPayHeadsToEmployee.setPayHeadAmount(addPayHeadsToEmployeeDetails.getPayHeadAmount());
@@ -45,7 +62,6 @@ public class AddPayHeadsToEmployeeServiceimpl implements AddPayHeadsToEmployeeSe
         return addPayHeadsToEmployeeRepository.save(addPayHeadsToEmployee);
     }
 
-    // Delete
     public void deleteAddPayHeadsToEmployee(Long id) {
         addPayHeadsToEmployeeRepository.deleteById(id);
     }

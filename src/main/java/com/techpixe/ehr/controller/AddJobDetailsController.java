@@ -7,48 +7,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequestMapping("/api/JobDetails")
 @RestController
 public class AddJobDetailsController {
-    @Autowired
-    private AddJobDetailsService addJobDetailsService;
+	@Autowired
+	private AddJobDetailsService addJobDetailsService;
 
-    @PostMapping("/addJob/{user_Id}")
-    public ResponseEntity<AddJobDetails> createJobDetails(@RequestBody AddJobDetails jobDetails,
-                                                          @PathVariable Long user_Id) {
-        //jobDetails.setJobkeyskills(jobDetails.getJobkeyskills());
-        AddJobDetails createdJobDetails = addJobDetailsService.saveJobDetails(jobDetails, user_Id);
-        //System.err.println(jobDetails.getJobkeyskills());
-        return ResponseEntity.ok(createdJobDetails);
-    }
+	@PostMapping("/addJob/{user_Id}")
+	public ResponseEntity<Map<String, String>> createJobDetails(@RequestBody AddJobDetails jobDetails,
+			@PathVariable Long user_Id) throws Exception {
+		addJobDetailsService.saveJobDetails(jobDetails, user_Id);
+		return ResponseEntity.ok(Collections.singletonMap("message", "Data saved successfully"));
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AddJobDetails> getJobDetailsById(@PathVariable("id") Long jobId) {
-        AddJobDetails jobDetails = addJobDetailsService.getJobDetailsById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job not found with ID: " + jobId));
-        return ResponseEntity.ok(jobDetails);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<AddJobDetails> getJobDetailsById(@PathVariable("id") Long jobId) {
+		AddJobDetails jobDetails = addJobDetailsService.getJobDetailsById(jobId);
+		return ResponseEntity.ok(jobDetails);
+	}
 
-    @GetMapping
-    public ResponseEntity<List<AddJobDetails>> getAllJobDetails() {
-        List<AddJobDetails> jobDetailsList = addJobDetailsService.getAllJobDetails();
-        return ResponseEntity.ok(jobDetailsList);
-    }
+	@DeleteMapping("/delete/{id}")
+	public void deleteJobDetails(@PathVariable("id") Long jobId) throws Exception {
+		try {
+			addJobDetailsService.deleteJobDetails(jobId);
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteJobDetails(@PathVariable("id") Long jobId) {
-        addJobDetailsService.deleteJobDetails(jobId);
-        return ResponseEntity.noContent().build();
-    }
+	}
 
+	@PutMapping("/update/{jobId}")
+	public ResponseEntity<Map<String, String>> updateJobDetails(@PathVariable long jobId,
+			@RequestBody AddJobDetailsDto updateDto) throws Exception {
+		addJobDetailsService.updateJobDetails(jobId, updateDto);
+		return ResponseEntity.ok(Collections.singletonMap("message", "Data updated successfully"));
+	}
 
-    @PutMapping("/update/{jobId}")
-    public ResponseEntity<AddJobDetails> updateJobDetails(@PathVariable long jobId,
-                                                          @RequestBody AddJobDetailsDto updateDto) {
-        AddJobDetails updatedJobDetails = addJobDetailsService.updateJobDetails(jobId, updateDto);
-        return ResponseEntity.ok(updatedJobDetails);
-    }
 }

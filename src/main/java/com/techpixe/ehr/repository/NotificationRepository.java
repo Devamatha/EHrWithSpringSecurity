@@ -9,9 +9,9 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
     // Find notifications by recipient, ordered by timestamp in descending order
-    List<Notification> findByRecipientOrderByTimestampDesc(EmployeeTable recipient);
+    List<Notification> findByEmployeeTableOrderByTimestampDesc(EmployeeTable recipient);
 
-    List<Notification> findAllByRecipient(EmployeeTable employee);
+    List<Notification> findAllByEmployeeTable(EmployeeTable employee);
 
 
 }

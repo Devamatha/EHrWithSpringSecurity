@@ -1,5 +1,6 @@
 package com.techpixe.ehr.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -13,8 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) // Avoids Lazy Initialization issues during
-																	// serialization
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) 
 public class Notification {
 
 	@Id
@@ -31,12 +31,19 @@ public class Notification {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sender_id")
-	@JsonIgnoreProperties("sentNotifications") // Ignore sentNotifications to prevent recursion
+	@JsonIgnoreProperties("sentNotifications")
 	private HR sender;
-	@JsonIgnore
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "recipient_id")
-	@JsonIgnoreProperties("receivedNotifications") // Ignore receivedNotifications to prevent recursion
-	private EmployeeTable recipient;
+	
+//	
+//	@JsonIgnore
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "recipient_id")
+//	@JsonBackReference(value = "employee-notification")
+//	private EmployeeTable recipient;
+	
+	
+	  @ManyToOne(fetch = FetchType.EAGER)
+	    @JsonBackReference(value = "employee-notification")
+	    @JoinColumn(name = "empId")
+	    private EmployeeTable employeeTable;
 }

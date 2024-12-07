@@ -11,14 +11,5 @@ public interface SubscriptionPlanService {
 
     SubscriptionPlan upgradSubscriptionPlan(Long id, SubscriptionPlan subscriptionPlan);
 
-    SubscriptionPlan updateSubscriptionPlan(Long id, SubscriptionPlan subscriptionPlan);
-
-
-    SubscriptionPlan getSubscriptionPlanById(Long id);
-
-    List<SubscriptionPlan> getAllSubscriptionPlans();
-
-    void deleteSubscriptionPlan(Long id);
-
-    //public boolean isSubscriptionActive(Long userId);
+ 
 }

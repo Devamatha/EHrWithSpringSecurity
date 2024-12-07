@@ -95,46 +95,6 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
         return subscriptionPlanRepository.save(subscriptionPlan);
     }
 
-    @Override
-
-    public SubscriptionPlan updateSubscriptionPlan(Long id, SubscriptionPlan subscriptionPlan) {
-        Optional<SubscriptionPlan> existingPlan = subscriptionPlanRepository.findById(id);
-        if (existingPlan.isPresent()) {
-            SubscriptionPlan planToUpdate = existingPlan.get();
-            planToUpdate.setPlanType(subscriptionPlan.getPlanType());
-            planToUpdate.setAmount(subscriptionPlan.getAmount());
-            planToUpdate.setStartDate(subscriptionPlan.getStartDate());
-            planToUpdate.setEndDate(subscriptionPlan.getEndDate());
-            planToUpdate.setUser(subscriptionPlan.getUser());
-            planToUpdate.setTotalResumes(subscriptionPlan.getTotalResumes());
-            return subscriptionPlanRepository.save(planToUpdate);
-        }
-        return null;
-    }
-
-    @Override
-    public SubscriptionPlan getSubscriptionPlanById(Long id) {
-        return subscriptionPlanRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public void deleteSubscriptionPlan(Long id) {
-        subscriptionPlanRepository.deleteById(id);
-    }
-
-//    @Override
-//    public boolean isSubscriptionActive(Long userId) {
-//        SubscriptionPlan subscription = subscriptionPlanRepository.findByUserId(userId);
-//        if (subscription == null) {
-//            return false;
-//        }
-//        LocalDate currentDate = LocalDate.now();
-//        return currentDate.isAfter(subscription.getStartDate()) && currentDate.isBefore(subscription.getEndDate());
-//    }
-
-    @Override
-    public List<SubscriptionPlan> getAllSubscriptionPlans() {
-        return subscriptionPlanRepository.findAll();
-    }
+    
 
 }

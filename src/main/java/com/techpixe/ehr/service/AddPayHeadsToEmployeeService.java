@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface AddPayHeadsToEmployeeService {
     AddPayHeadsToEmployee createAddPayHeadsToEmployee(AddPayHeadsToEmployee addPayHeadsToEmployee);
+    public AddPayHeadsToEmployee saveOrUpdatePayHead(AddPayHeadsToEmployee addPayHeadsToEmployee) ;
+
 
     List<AddPayHeadsToEmployee> getAllAddPayHeadsToEmployee();
 

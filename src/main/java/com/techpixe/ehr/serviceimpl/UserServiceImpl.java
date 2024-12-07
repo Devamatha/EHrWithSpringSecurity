@@ -76,6 +76,7 @@ public class UserServiceImpl implements UserService {
 			employeeData.put("email", hr.getClients().getEmail());
 			employeeData.put("mobileNumber", hr.getClients().getMobileNumber());
 			employeeData.put("address", hr.getAddress());
+			
 			response.add(employeeData);
 
 		}

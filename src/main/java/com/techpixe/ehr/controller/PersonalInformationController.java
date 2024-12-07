@@ -21,117 +21,110 @@ import java.util.List;
 @RequestMapping("/api/candidates")
 public class PersonalInformationController {
 
-    @Autowired
-    private PersonalInformationService personalInformationService;
+	@Autowired
+	private PersonalInformationService personalInformationService;
 
-    @Autowired
-    private EmailService emailService;
+	@Autowired
+	private EmailService emailService;
 
-    @PostMapping("/upload-resume/{user_id}")
-    public PersonalInformation uploadResume(@RequestParam(value = "file", required = false) MultipartFile file,
+	@PostMapping("/upload-resume/{user_id}")
+	public PersonalInformation uploadResume(@RequestParam(required = false) MultipartFile file,
 
-                                            @PathVariable Long user_id) throws Exception {
+			@PathVariable Long user_id) throws Exception {
 
-        PersonalInformation savedPersonalInformation = personalInformationService.savePersonalInformation(file,
-                user_id);
-        return savedPersonalInformation;
+		PersonalInformation savedPersonalInformation = personalInformationService.savePersonalInformation(file,
+				user_id);
+		return savedPersonalInformation;
 
-    }
+	}
 
+	@PutMapping("/update-Details/{user_id}")
+	public ResponseEntity<?> uploadDate(
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime fromTime,
+			@RequestParam String jobRole, @PathVariable Long user_id) {
+		try {
+			ResponseEntity<String> webhookResponse = personalInformationService.savePersonalDateInformation(date,
+					fromTime, jobRole, user_id);
 
-    @PutMapping("/update-Details/{user_id}")
-    public ResponseEntity<?> uploadDate(
-            @RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            @RequestParam(value = "fromTime", required = false) @DateTimeFormat(pattern = "HH:mm") LocalTime fromTime,
-            @RequestParam String jobRole, @PathVariable Long user_id) {
-        try {
-            // Get the response from the webhook
-            ResponseEntity<String> webhookResponse = personalInformationService.savePersonalDateInformation(date,
-                    fromTime, jobRole, user_id);
+			return webhookResponse;
 
-            //System.err.println(webhookResponse.getBody());
-            // System.err.println(webhookResponse.getBody());
+		} catch (Exception e) {
+			return new ResponseEntity<>("Failed to update details: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 
-            // Return the webhook response directly
-            return webhookResponse;
+	@PostMapping("/add/{candidate_Id}")
+	public ResponseEntity<?> addPersonalInformation(@PathVariable Long candidate_Id,
+			@RequestBody PersonalInformationDto payload) {
+		if (payload == null || payload.getPersonalInformation() == null) {
+			return new ResponseEntity<>("Invalid request payload", HttpStatus.BAD_REQUEST);
+		}
 
-        } catch (Exception e) {
-            return new ResponseEntity<>("Failed to update details: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+		PersonalInformation personalInfo = personalInformationService.getPersonalInformationByCandidateId(candidate_Id);
 
-    @PostMapping("/add/{candidate_Id}")
-    public ResponseEntity<?> addPersonalInformation(@PathVariable Long candidate_Id,
-                                                    @RequestBody PersonalInformationDto payload) {
-        if (payload == null || payload.getPersonalInformation() == null) {
-            return new ResponseEntity<>("Invalid request payload", HttpStatus.BAD_REQUEST);
-        }
+		// System.err.println(personalInfo);
+		personalInfo.setName(payload.getPersonalInformation().getName());
+		personalInfo.setMobileNumber(payload.getPersonalInformation().getMobileNumber());
+		personalInfo.setEmailID(payload.getPersonalInformation().getEmailID());
+		personalInfo.setInterviewDate(payload.getPersonalInformation().getInterviewDate());
+		personalInfo.setInterviewTime(payload.getPersonalInformation().getInterviewTime());
 
-        PersonalInformation personalInfo = personalInformationService.getPersonalInformationByCandidateId(candidate_Id);
+		personalInfo = personalInformationService.savePersonalInformation(personalInfo);
 
-        //System.err.println(personalInfo);
-        personalInfo.setName(payload.getPersonalInformation().getName());
-        personalInfo.setMobileNumber(payload.getPersonalInformation().getMobileNumber());
-        personalInfo.setEmailID(payload.getPersonalInformation().getEmailID());
-        personalInfo.setInterviewDate(payload.getPersonalInformation().getInterviewDate());
-        personalInfo.setInterviewTime(payload.getPersonalInformation().getInterviewTime());
+		if (payload.getQuestions() != null) {
+			personalInformationService.saveQuestions(candidate_Id, payload.getQuestions(), personalInfo);
+		}
 
-        personalInfo = personalInformationService.savePersonalInformation(personalInfo);
+		// return new ResponseEntity<>("Request processed successfully", HttpStatus.OK);
+		return new ResponseEntity<>(personalInfo, HttpStatus.OK);
+	}
 
-        if (payload.getQuestions() != null) {
-            personalInformationService.saveQuestions(candidate_Id, payload.getQuestions(), personalInfo);
-        }
+	@GetMapping("/all")
+	public ResponseEntity<List<PersonalInformation>> getAllPersonalInformation() {
+		List<PersonalInformation> personalInfoList = personalInformationService.getAllPersonalInformation();
+		return new ResponseEntity<>(personalInfoList, HttpStatus.OK);
+	}
 
-        // return new ResponseEntity<>("Request processed successfully", HttpStatus.OK);
-        return new ResponseEntity<>(personalInfo, HttpStatus.OK);
-    }
+	@GetMapping("/{email}")
+	public ResponseEntity<PersonalInformation> getPersonalInformationByString(@PathVariable("email") String email) {
+		PersonalInformation personalInformation = personalInformationService.getPersonalInformationById(email);
+		if (personalInformation != null) {
+			return new ResponseEntity<>(personalInformation, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 
-    @GetMapping("/all")
-    public ResponseEntity<List<PersonalInformation>> getAllPersonalInformation() {
-        List<PersonalInformation> personalInfoList = personalInformationService.getAllPersonalInformation();
-        return new ResponseEntity<>(personalInfoList, HttpStatus.OK);
-    }
+	@GetMapping("/exam/{examId}")
+	public ResponseEntity<PersonalInfoDto> getPersonalInformation(@PathVariable("examId") String examId) {
+		PersonalInfoDto personalInformation = personalInformationService.getPersonalInformationByexamId(examId);
+		if (personalInformation != null) {
+			return new ResponseEntity<>(personalInformation, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-    @GetMapping("/{email}")
-    public ResponseEntity<PersonalInformation> getPersonalInformationByString(@PathVariable("email") String email) {
-        PersonalInformation personalInformation = personalInformationService.getPersonalInformationById(email);
-        if (personalInformation != null) {
-            return new ResponseEntity<>(personalInformation, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+	@GetMapping("/verify")
+	public ResponseEntity<?> getVerified(@RequestParam("email") String email) {
+		// System.err.println(email);
+		boolean personalInfoList = personalInformationService.isVerified(email);
+		return new ResponseEntity<>(personalInfoList, HttpStatus.OK);
+	}
 
+	@GetMapping("/{id}/questions")
+	public List<Question> getAllQuestionsByPersonalInformationId(@PathVariable("id") Long personalInformationId) {
+		return personalInformationService.getAllQuestionsByPersonalInformationId(personalInformationId);
+	}
 
-    @GetMapping("/exam/{examId}")
-    public ResponseEntity<PersonalInfoDto> getPersonalInformation(@PathVariable("examId") String examId) {
-        PersonalInfoDto personalInformation = personalInformationService.getPersonalInformationByexamId(examId);
-        if (personalInformation != null) {
-            return new ResponseEntity<>(personalInformation, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/verify")
-    public ResponseEntity<?> getVerified(@RequestParam("email") String email) {
-        //System.err.println(email);
-        boolean personalInfoList = personalInformationService.isVerified(email);
-        return new ResponseEntity<>(personalInfoList, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}/questions")
-    public List<Question> getAllQuestionsByPersonalInformationId(@PathVariable("id") Long personalInformationId) {
-        return personalInformationService.getAllQuestionsByPersonalInformationId(personalInformationId);
-    }
-
-    @GetMapping("/send-message")
-    public void sendMessage() {
-        emailService.sendEmail("p.devamatha2001@gmail.com", "hsi", "https://zipdatainformation.s3.amazonaws.com/2/images.zip");
+	@GetMapping("/send-message")
+	public void sendMessage() {
+		emailService.sendEmail("p.devamatha2001@gmail.com", "hsi",
+				"https://zipdatainformation.s3.amazonaws.com/2/images.zip");
 //		return otpService.sendMessage();
 
-    }
-
+	}
 
 }
 //	    @PostMapping("/add/{candidate_Id}")

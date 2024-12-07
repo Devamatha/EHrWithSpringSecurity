@@ -1,6 +1,8 @@
 package com.techpixe.ehr.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,25 +15,29 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddJobDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long jobId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long jobId;
 
-    private String jobTitle;
+	@Column(nullable = false)
+	private String jobTitle;
 
-    //private List<String> jobkeyskills;
+	// private List<String> jobkeyskills;
 
-    private LocalDate createdAt;
+	private LocalDate createdAt;
 
-    private int yearsOfExperience;
-    private int noOfVacancies;
+	@Column(nullable = false)
+	private int yearsOfExperience;
 
-    private String overallPercentage;
+	@Column(nullable = false)
+	private int noOfVacancies;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_Id")
-    @JsonBackReference
-    private HR user;
-
+	@Column(nullable = false)
+	private String overallPercentage;
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_Id")
+	@JsonBackReference
+	private HR user;
 
 }
