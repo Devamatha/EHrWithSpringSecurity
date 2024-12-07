@@ -53,12 +53,14 @@ public class ClientsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(registerDto);
     }
 
-
-
-
     @PostMapping("/save")
-    public ResponseEntity<?> saveHRAndAdmin(@RequestParam String fullName,@RequestParam String email,@RequestParam Long mobileNumber,@RequestParam String role,@RequestParam(required = false) MultipartFile logo,@RequestParam(required = false) String companyName,@RequestParam(required = false) String authorizedCompanyName,@RequestParam(required = false) String address) {
-      Clients register = clientsService.registerHRAndAdmin(fullName, email, mobileNumber, role, logo, companyName, authorizedCompanyName, address);
+    public ResponseEntity<?> saveHRAndAdmin(@RequestParam String fullName, @RequestParam String email,
+            @RequestParam Long mobileNumber, @RequestParam String role,
+            @RequestParam(required = false) MultipartFile logo, @RequestParam(required = false) String companyName,
+            @RequestParam(required = false) String authorizedCompanyName,
+            @RequestParam(required = false) String address) {
+        Clients register = clientsService.registerHRAndAdmin(fullName, email, mobileNumber, role, logo, companyName,
+                authorizedCompanyName, address);
         return ResponseEntity.status(HttpStatus.CREATED).body(register);
     }
 
@@ -77,21 +79,20 @@ public class ClientsController {
             id = (Long) row[0];
             fullName = (String) row[1];
 
-
         }
 
-        role = authenticationResponse.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+        role = authenticationResponse.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
 
         if (role.equals("ROLE_EMPLOYEE")) {
             List<Long> dataId = employeeTableRepository.findEmployeeIdsByClientId(id);
             id = dataId.get(0);
         }
-if(role.equals("ROLE_HR")) {
-    List<Long> dataId = userRepository.findHRIdsByClientId(id);
-    id = dataId.get(0);
+        if (role.equals("ROLE_HR")) {
+            List<Long> dataId = userRepository.findHRIdsByClientId(id);
+            id = dataId.get(0);
 
-}
-
+        }
 
         if (null != authenticationResponse && authenticationResponse.isAuthenticated()) {
             if (null != env) {
@@ -105,8 +106,6 @@ if(role.equals("ROLE_HR")) {
                         .issuedAt(new java.util.Date())
                         .expiration(new java.util.Date((new java.util.Date()).getTime() + 30000000))
                         .signWith(secretKey).compact();
-
-               
 
             } else {
                 System.out.println(env + "is not found");
