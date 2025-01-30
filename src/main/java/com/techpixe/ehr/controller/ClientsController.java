@@ -57,14 +57,14 @@ public class ClientsController {
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<Map<String, Object>> saveHRAndAdmin(@RequestParam String fullName, @RequestParam String email,
+	public ResponseEntity<Clients> saveHRAndAdmin(@RequestParam String fullName, @RequestParam String email,
 			@RequestParam Long mobileNumber, @RequestParam String role,
 			@RequestParam(required = false) MultipartFile logo, @RequestParam(required = false) String companyName,
 			@RequestParam(required = false) String authorizedCompanyName,
 			@RequestParam(required = false) String address) {
 		Clients register = clientsService.registerHRAndAdmin(fullName, email, mobileNumber, role, logo, companyName,
 				authorizedCompanyName, address);
-		return ResponseEntity.ok(Collections.singletonMap("message", fullName + "Created Successfully as a " + role));
+		return ResponseEntity.ok(register);
 	}
 
 	@PostMapping("/login")

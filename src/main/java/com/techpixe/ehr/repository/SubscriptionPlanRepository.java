@@ -11,7 +11,7 @@ public interface SubscriptionPlanRepository extends JpaRepository<SubscriptionPl
 //    @Query("SELECT sp FROM SubscriptionPlan sp WHERE sp.user.user_Id = :userId ORDER BY sp.subscription_Id DESC")
 //    List<SubscriptionPlan> findLatestSubscriptionPlanByUserId(@Param("userId") Long userId);
 
-    @Query(value = "SELECT s.subscription_id FROM subscription_plan s WHERE s.user_id = :userId ORDER BY s.subscription_id DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT s.subscription_id FROM SubscriptionPlan s WHERE s.user_id = :userId ORDER BY s.subscription_id DESC LIMIT 1", nativeQuery = true)
     Long findLatestSubscriptionIdByUserId(@Param("userId") Long userId);
 
 

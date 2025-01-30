@@ -1,13 +1,22 @@
 package com.techpixe.ehr.repository;
 
-import com.techpixe.ehr.entity.*;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.techpixe.ehr.entity.AddJobDetails;
+import com.techpixe.ehr.entity.Attendance;
+import com.techpixe.ehr.entity.EmployeeTable;
+import com.techpixe.ehr.entity.HR;
+import com.techpixe.ehr.entity.Holiday;
+import com.techpixe.ehr.entity.LeaveApprovalTable;
+import com.techpixe.ehr.entity.PayHeads;
+import com.techpixe.ehr.entity.PersonalInformation;
+import com.techpixe.ehr.entity.SubscriptionPlan;
+@Repository
 public interface UserRepository extends JpaRepository<HR, Long> {
 
     //HR findByMobileNumber(Long mobileNumber);

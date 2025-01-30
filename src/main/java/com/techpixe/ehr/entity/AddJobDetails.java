@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//@Table(name = "add_job_details")
 public class AddJobDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

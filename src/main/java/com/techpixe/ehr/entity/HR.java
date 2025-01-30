@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+//@Table(name = "hr")
 public class HR {
 
     @Id

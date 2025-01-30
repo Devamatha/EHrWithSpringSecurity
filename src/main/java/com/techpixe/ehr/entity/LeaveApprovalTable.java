@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+//@Table(name = "leave_approval_table")
 public class LeaveApprovalTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

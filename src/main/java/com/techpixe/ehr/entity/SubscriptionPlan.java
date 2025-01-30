@@ -14,39 +14,37 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-
+////@Table(name = "subscription_plan")
 public class SubscriptionPlan {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long subscription_Id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long subscription_Id;
 
-    @Column(nullable = false)
-    private String planType; // Quarterly, Monthly, Yearly
+	@Column(nullable = false)
+	private String planType; // Quarterly, Monthly, Yearly
 
-    @Column(nullable = false)
-    private double amount;
+	@Column(nullable = false)
+	private double amount;
 
-    @Column(nullable = true)
-    private LocalDate startDate;
+	@Column(nullable = true)
+	private LocalDate startDate;
 
-    @Column(nullable = true)
-    private LocalDate endDate;
+	@Column(nullable = true)
+	private LocalDate endDate;
 
-    @Column(length = 1000,nullable = true)
-    private String description;
+	@Column(length = 1000, nullable = true)
+	private String description;
 
-    @Column(length = 1000,nullable = true)
-    private String additionalFeatures;
+	@Column(length = 1000, nullable = true)
+	private String additionalFeatures;
 
-    private long totalResumes;
+	private long totalResumes;
 
+	private LocalDate createdAt;
 
-    private LocalDate createdAt;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_Id")
-    @JsonBackReference
-    private HR user;
-
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_Id")
+	@JsonBackReference
+	private HR user;
 
 }

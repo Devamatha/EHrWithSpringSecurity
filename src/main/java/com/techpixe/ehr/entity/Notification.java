@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) 
+////@Table(name = "notification")
 public class Notification {
 
 	@Id

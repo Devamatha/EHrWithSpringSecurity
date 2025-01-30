@@ -1,12 +1,12 @@
 package com.techpixe.ehr.config;
 
-import com.techpixe.ehr.exceptionhandle.CustomAccessDeniedHandler;
-import com.techpixe.ehr.exceptionhandle.CustomBasicAuthenticationEntryPoint;
-import com.techpixe.ehr.filter.*;
-import jakarta.servlet.http.HttpServletRequest;
+import static org.springframework.security.config.Customizer.withDefaults;
+
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
@@ -18,19 +18,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import com.techpixe.ehr.exceptionhandle.CustomAccessDeniedHandler;
+import com.techpixe.ehr.exceptionhandle.CustomBasicAuthenticationEntryPoint;
+import com.techpixe.ehr.filter.AuthoritiesLoggingAfterFilter;
+import com.techpixe.ehr.filter.AuthoritiesLoggingAtFilter;
+import com.techpixe.ehr.filter.JWTTokenGeneratorFilter;
+import com.techpixe.ehr.filter.JWTTokenValidatorFilter;
 import com.techpixe.ehr.filter.RequestValidationBeforeFilter;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 public class ProjectSecurityConfig {
+
+	private static final String[] AUTH_WHITE_LIST = { "/v3/api-docs/**", "/swagger-ui/**", "/v2/api-docs/**",
+			"/swagger-resources/**", "/webjars/**" };
 
 	@Bean
 	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -40,9 +46,9 @@ public class ProjectSecurityConfig {
 					@Override
 					public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 						CorsConfiguration config = new CorsConfiguration();
-						// config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-						config.setAllowedOrigins(
-								Arrays.asList("https://smartaihr.com", "https://twgads.com", "http://localhost:3000"));
+						config.setAllowedOriginPatterns(Collections.singletonList("*"));
+						// config.setAllowedOrigins(Arrays.asList("https://smartaihr.com",
+						// "https://twgads.com", "http://localhost:3000"));
 
 						config.setAllowedMethods(Collections.singletonList("*"));
 						config.setAllowCredentials(true);
@@ -69,8 +75,9 @@ public class ProjectSecurityConfig {
 				.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()) // Only HTTP
 				.authorizeHttpRequests((requests) -> requests
 						// .requestMatchers("/api/users/allUsers").authenticated()
-						.requestMatchers("/api/plan/save/**", "/api/users/allUsers","/api/plan/get/{id}","/api/plan/delete/{id}").hasRole("ADMIN")
-						.requestMatchers("/api/clients/changepassword/{Id}").authenticated()
+						.requestMatchers("/api/plan/save/**", "/api/users/allUsers", "/api/plan/get/{id}",
+								"/api/plan/delete/{id}")
+						.hasRole("ADMIN").requestMatchers("/api/clients/changepassword/{Id}").authenticated()
 						.requestMatchers("/api/clients/save/Employee/{id}", "/api/JobDetails/addJob/{user_Id}",
 								"/api/JobDetails/{id}", "/api/JobDetails/update/{jobId}", "/api/JobDetails/delete/{id}",
 								"/api/users/add-job-details/{userId}", "/api/users/holiday/{userId}",
@@ -100,8 +107,15 @@ public class ProjectSecurityConfig {
 								"/api/plan/getAll", "/api/oderId/save/oderId", "/api/subscriptions/save/{userId}",
 								"/api/candidates/exam/{examId}", "/api/candidates/{id}/questions",
 								"/api/interviews/save-answers/{candidate_Id}", "/api/candidates/verify",
-								"/api/users/sendEmail", "/api/contacts/save","/api/clients/forgotPassword")
-						.permitAll());
+								"/api/users/sendEmail", "/api/contacts/save", "/api/clients/forgotPassword",
+								"/api/users/sendingEmail", "/api/users/save", "/api/salaries/getAllEmployee",
+								"/api/categoreis/getAllExpenses", "/api/getAllSiteUsersData", "/api/uthista/login",
+								"/api/check-attendance/{employeeId}", "/api/saveClockIn/{employeeId}",
+								"/api/saveClockOut/{employeeId}")
+						.permitAll().requestMatchers(AUTH_WHITE_LIST).permitAll()
+
+				);
+
 		http.formLogin(withDefaults());
 		http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
 		http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));

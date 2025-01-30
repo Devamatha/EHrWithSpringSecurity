@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-
+////@Table(name = "pay_heads")
 public class PayHeads {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

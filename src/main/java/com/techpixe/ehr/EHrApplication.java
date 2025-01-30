@@ -12,6 +12,7 @@ public class EHrApplication {
         SpringApplication.run(EHrApplication.class, args);
     }
 
+    
 }
 
 

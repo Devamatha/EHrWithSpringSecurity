@@ -1,27 +1,46 @@
 package com.techpixe.ehr.controller;
 
-import com.techpixe.ehr.dto.MailDto;
-import com.techpixe.ehr.entity.*;
-import com.techpixe.ehr.service.UserService;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
+import com.techpixe.ehr.dto.MailDto;
+import com.techpixe.ehr.entity.AddJobDetails;
+import com.techpixe.ehr.entity.Attendance;
+import com.techpixe.ehr.entity.HR;
+import com.techpixe.ehr.entity.Holiday;
+import com.techpixe.ehr.entity.LeaveApprovalTable;
+import com.techpixe.ehr.entity.PayHeads;
+import com.techpixe.ehr.entity.PersonalInformation;
+import com.techpixe.ehr.enumClass.CategoryType;
+import com.techpixe.ehr.enumClass.FormType;
+import com.techpixe.ehr.enumClass.PaymentMode;
+import com.techpixe.ehr.service.CategriesExpensesService;
+import com.techpixe.ehr.service.EmployeeSalariesService;
+import com.techpixe.ehr.service.UserService;
+
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -29,7 +48,11 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private EmployeeSalariesService EmployeeSalariesService;
 
+	@Autowired
+	private CategriesExpensesService categriesExpensesService;
 
 	@GetMapping("/{id}")
 	public ResponseEntity<HR> getJobDetailsById(@PathVariable("id") Long userId) {
@@ -77,7 +100,8 @@ public class UserController {
 		List<PersonalInformation> CandidateDetails = userService.getPersonalInformationByUserId(userId);
 		List<Map<String, Object>> response = new ArrayList<>();
 		for (PersonalInformation candidate : CandidateDetails) {
-			if(candidate.getEmailID()!=null && candidate.getInterviewDate()!=null && candidate.getInterviewTime()!=null) {
+			if (candidate.getEmailID() != null && candidate.getInterviewDate() != null
+					&& candidate.getInterviewTime() != null) {
 				Map<String, Object> candidateData = new HashMap<>();
 
 				candidateData.put("candidateId", candidate.getCandidateId());
@@ -92,7 +116,7 @@ public class UserController {
 				candidateData.put("jobRole", candidate.getJobRole());
 				response.add(candidateData);
 			}
-			
+
 		}
 		return response;
 	}
@@ -136,6 +160,60 @@ public class UserController {
 		return mailDto;
 	}
 
+	@PostMapping("/sendingEmail")
+	public MailDto sendingEmail(@RequestParam(required = false) String fullName,
+			@RequestParam(required = false) String email, @RequestParam(required = false) Long phoneNumber,
+			@RequestParam(required = false) MultiValueMap<String, String> formData, @RequestParam String subject,
+			@RequestParam String heading, @RequestParam String toEmail, HttpServletRequest httpServletRequest) {
+		MailDto mailDto = new MailDto();
+
+		// Configure JavaMailSender
+		JavaMailSender javaMailSender = configureMailSender();
+
+		// Create a MimeMessage object for HTML email
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper;
+		try {
+			helper = new MimeMessageHelper(mimeMessage, true);
+			helper.setFrom("sales@thewisguystech.com");
+			helper.setTo(toEmail);
+			helper.setSubject(subject);
+
+			// Build the email body with HTML
+			StringBuilder emailBody = new StringBuilder();
+			emailBody.append("<html><body>");
+			emailBody.append("<h3><b>").append(heading).append("</b></h3>"); // Bold heading
+
+			
+
+			if (formData != null && !formData.isEmpty()) {
+				emailBody.append("<p><b>Additional Details:</b></p>");
+				formData.forEach((key, value) -> {
+					if (!key.equalsIgnoreCase("toEmail") && !key.equalsIgnoreCase("subject") &&!key.equalsIgnoreCase("heading")) {
+						if (value != null && !value.isEmpty()
+								&& value.stream().anyMatch(v -> v != null && !v.trim().isEmpty())) {
+							emailBody.append("<p><b>").append(key).append(":</b> ").append(String.join(", ", value))
+									.append("</p>");
+						}
+					}
+				});
+			}
+
+			emailBody.append("</body></html>");
+
+			// Set email body as HTML
+			helper.setText(emailBody.toString(), true);
+
+			// Send the email
+			javaMailSender.send(mimeMessage);
+
+		} catch (Exception e) {
+			System.err.println("Error sending email: " + e.getMessage());
+		}
+
+		return mailDto;
+	}
+
 	private JavaMailSender configureMailSender() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost("smtp.hostinger.com");
@@ -153,6 +231,39 @@ public class UserController {
 		props.put("mail.smtp.ssl.trust", "smtp.hostinger.com");
 
 		return mailSender;
+	}
+
+	@PostMapping("/save")
+	public ResponseEntity<Map<String, Object>> saveData(@RequestParam(required = false) String empId,
+			@RequestParam(required = false) String empName, @RequestParam(required = false) Long amount,
+			@RequestParam(required = false) PaymentMode paymentMode, @RequestParam(required = false) String remarks,
+			@RequestParam(required = false) FormType formType,
+			@RequestParam(required = false) CategoryType categoryType,
+			@RequestParam(required = false) String transcationId, @RequestParam(required = false) String email,
+			@RequestParam(required = false) MultipartFile image) {
+
+		try {
+
+			if (empName != null && paymentMode != null && amount != null && formType != null && categoryType != null) {
+				EmployeeSalariesService.saveData(empId, empName, formType, categoryType, amount, remarks, paymentMode,
+						transcationId, email);
+
+			} else if (paymentMode != null && formType != null && amount != null && categoryType != null) {
+
+				categriesExpensesService.saveData(formType, categoryType, amount, remarks, paymentMode, transcationId,
+						email);
+
+			} else if (formType != null && image != null) {
+				categriesExpensesService.saveImage(formType, remarks, image, email);
+			} else {
+				categriesExpensesService.saveRemarks(formType, remarks, email);
+			}
+
+		} catch (Exception ex) {
+			throw new RuntimeException(ex.getMessage());
+		}
+		return ResponseEntity.ok(Collections.singletonMap("message", "Data saved successfully"));
+
 	}
 
 }

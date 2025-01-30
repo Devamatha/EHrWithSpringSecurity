@@ -13,24 +13,24 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+//@Table(name = "attendance")
 public class Attendance {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private LocalDate date;
-    private String name;
-    private String empCode;
-    private LocalTime punchIn;
-    private LocalTime punchOut;
-    private String punchInMessage;
-    private String punchOutMessage;
-    private String workingHours;
-    private boolean isAttendance;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference(value = "employee-attendance")
-    @JoinColumn(name = "emp_Id")
-    private EmployeeTable employeeTable;
-
+	private LocalDate date;
+	private String name;
+	private String empCode;
+	private LocalTime punchIn;
+	private LocalTime punchOut;
+	private String punchInMessage;
+	private String punchOutMessage;
+	private String workingHours;
+	private boolean isAttendance;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonBackReference(value = "employee-attendance")
+	@JoinColumn(name = "emp_Id")
+	private EmployeeTable employeeTable;
 
 }
