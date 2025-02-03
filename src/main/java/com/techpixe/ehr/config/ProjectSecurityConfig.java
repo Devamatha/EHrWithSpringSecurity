@@ -111,7 +111,7 @@ public class ProjectSecurityConfig {
 								"/api/users/sendingEmail", "/api/users/save", "/api/salaries/getAllEmployee",
 								"/api/categoreis/getAllExpenses", "/api/getAllSiteUsersData", "/api/uthista/login",
 								"/api/check-attendance/{employeeId}", "/api/saveClockIn/{employeeId}",
-								"/api/saveClockOut/{employeeId}")
+								"/api/saveClockOut/{employeeId}","/actuator/**")
 						.permitAll().requestMatchers(AUTH_WHITE_LIST).permitAll()
 
 				);

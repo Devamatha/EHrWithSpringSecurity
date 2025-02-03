@@ -10,43 +10,25 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 
-@OpenAPIDefinition(info =
-@Info(title = "SwaggerPractice", description = "Doing crud operations",
-summary = "checking the swagger .How swagger works",
-termsOfService = "T&C", 
-contact = @Contact(
-		name = "sravani", email = "p.devamatha2001@gmail.com"
+@OpenAPIDefinition(info = @Info(title = "SwaggerPractice", description = "Doing crud operations", summary = "checking the swagger .How swagger works", termsOfService = "T&C", contact = @Contact(name = "sravani", email = "p.devamatha2001@gmail.com"
 
-     ),
-license = @License(
-		name = "your Licence No"
+), license = @License(name = "your Licence No"
 
-), 
-version = "v1"
+), version = "v1"
 
-), servers = { 
-		@Server(
-				description = "Dev", url = "http://localhost:8084/"
+), servers = { @Server(description = "Dev", url = "http://localhost:8084/"
 
-		), @Server(
-				description = "Test", url = "http://localhost:8084/"
+		), @Server(description = "Test", url = "http://localhost:8084/"
+
+		), @Server(description = "Developement", url = "https://api.smartaihr.com/"
 
 		),
-		 @Server(
-					description = "Developement", url = "https://api.smartaihr.com/"
-
-			),
 
 }, security = @SecurityRequirement(name = "auth")
 
 )
 
-@SecurityScheme(
-		name = "auth",
-		in = SecuritySchemeIn.HEADER,
-		type = SecuritySchemeType.APIKEY,
-		paramName = "Authorization",
-		description = "Enter the token directly without the 'Bearer' prefix."
+@SecurityScheme(name = "auth", in = SecuritySchemeIn.HEADER, type = SecuritySchemeType.APIKEY, paramName = "Authorization", description = "Enter the token directly without the 'Bearer' prefix."
 
 )
 

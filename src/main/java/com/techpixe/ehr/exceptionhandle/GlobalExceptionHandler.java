@@ -1,22 +1,24 @@
 package com.techpixe.ehr.exceptionhandle;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import io.jsonwebtoken.ExpiredJwtException;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -38,18 +40,30 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(MethodNotAllowedException.class)
-	public ResponseEntity<Object> handleMethodNotAllowed(MethodNotAllowedException ex, WebRequest request) {
-		Map<String, Object> body = createErrorResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),
-				request.getDescription(false).replace("uri=", ""));
-		return new ResponseEntity<>(body, HttpStatus.METHOD_NOT_ALLOWED);
+	@ExceptionHandler(NoHandlerFoundException.class)
+	public ResponseEntity<Object> handleNotFoundException(NoHandlerFoundException ex, HttpServletRequest request) {
+		Map<String, Object> body = new LinkedHashMap<>();
+		body.put("timestamp", LocalDateTime.now());
+		body.put("status", HttpStatus.NOT_FOUND.value());
+		body.put("error", "Not Found");
+		body.put("message", "API URL not found");
+		body.put("path", request.getRequestURI());
+
+		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(NoHandlerFoundException.class)
-	public ResponseEntity<Object> handleNoHandlerFound(NoHandlerFoundException ex, WebRequest request) {
-		Map<String, Object> body = createErrorResponse(HttpStatus.NOT_FOUND, "The requested resource was not found.",
-				request.getDescription(false).replace("uri=", ""));
-		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+	// Handle 405 Method Not Allowed
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public ResponseEntity<Object> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex,
+			HttpServletRequest request) {
+		Map<String, Object> body = new LinkedHashMap<>();
+		body.put("timestamp", LocalDateTime.now());
+		body.put("status", HttpStatus.METHOD_NOT_ALLOWED.value());
+		body.put("error", "Method Not Allowed");
+		body.put("message", "This HTTP method is not allowed for the requested URL");
+		body.put("path", request.getRequestURI());
+
+		return new ResponseEntity<>(body, HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 	@ExceptionHandler(MissingServletRequestParameterException.class)
@@ -117,7 +131,8 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ExpiredJwtException.class)
 	public ResponseEntity<Map<String, Object>> handleExpiredJwtException(ExpiredJwtException ex) {
-		return buildErrorResponse(HttpStatus.EXPECTATION_FAILED, "JWT is expired", ex.getMessage(), "/api/uthista/login");
+		return buildErrorResponse(HttpStatus.EXPECTATION_FAILED, "JWT is expired", ex.getMessage(),
+				"/api/uthista/login");
 	}
 
 	private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String error, String message,
