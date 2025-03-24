@@ -165,7 +165,7 @@ public ResponseEntity<?> forgotPassword(String email) {
 		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 		simpleMailMessage.setFrom(fromMail);
 		simpleMailMessage.setTo(email);
-		simpleMailMessage.setSubject("Registration completed Successfully in Smartaihr application\n");
+		simpleMailMessage.setSubject("New Password Generation completed Successfully in Smartaihr application\n");
 		simpleMailMessage.setText("Dear " + user.getFullName()
 				+ "\n\nPlease check your  email and generted password  \n UserEmail  :" + email + "\n  MobileNumber :"
 				+ user.getMobileNumber() + "\n New Password   :" + password   + "\n\n"
