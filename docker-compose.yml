@@ -1,0 +1,34 @@
+#version: '3.8'
+#
+#services:
+#  ehr-application:
+#    build: .
+#    ports:
+#      - "8084:8084"
+#    environment:
+#      # Primary Database
+#      SPRING_DATASOURCE_URL: jdbc:mysql://147.79.71.46:3306/u516822144_smartAiHr
+#      SPRING_DATASOURCE_USERNAME: sravani
+#      SPRING_DATASOURCE_PASSWORD: SmartAiHr@123
+#
+#      # Secondary Database
+#      SECOND_DATASOURCE_URL: jdbc:mysql://46.202.181.9:3306/u805212975_adminuttishtha
+#      SECOND_DATASOURCE_USERNAME: u805212975_sravani
+#      SECOND_DATASOURCE_PASSWORD: Admin1@uttishtha.com
+#
+#      # Mail
+#      SPRING_MAIL_HOST: smtp.gmail.com
+#      SPRING_MAIL_PORT: 587
+#      SPRING_MAIL_USERNAME: smartaihrofficial@gmail.com
+#      SPRING_MAIL_PASSWORD: sbor jsbo mntp updl
+#
+#      # Server
+#      SERVER_PORT: 8084
+#    restart: always
+version: '3.8'
+
+services:
+    ehr-app:
+      build: .
+      ports:
+        - "8084:8084"
