@@ -1,0 +1,30 @@
+name: EHR Docker CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: docker build -t ehr-app:latest .
+
+      - name: Run container and health check
+        run: |
+          docker run -d --name ehr-app -p 8084:8084 ehr-app:latest
+          echo "Waiting for app to start..."
+          sleep 30
+          docker ps
+          docker logs ehr-app
