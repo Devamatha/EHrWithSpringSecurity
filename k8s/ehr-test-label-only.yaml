@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ehr-test-label-only
+  namespace: environment
+  labels:
+    app: ehr-spring-security
+    cocreate.io/approved: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ehr-test-label-only
+  template:
+    metadata:
+      labels:
+        app: ehr-test-label-only
+        cocreate.io/approved: "true"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ehr-spring-security
+          image: ghcr.io/devamatha/ehr-spring-security:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
