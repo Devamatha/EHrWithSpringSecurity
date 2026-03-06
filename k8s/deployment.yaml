@@ -14,6 +14,13 @@ spec:
       labels:
         app: ehr-spring-security
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: ehr-spring-security
           image: ghcr.io/devamatha/ehr-spring-security:latest
@@ -32,6 +39,10 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           readinessProbe:
             httpGet:
               path: /actuator/health
