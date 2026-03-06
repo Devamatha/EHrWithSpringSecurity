@@ -1,18 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ehr-spring-security
+  name: ehr-test-label-token
+  namespace: environment
   labels:
     app: ehr-spring-security
+    cocreate.io/approved: "true"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ehr-spring-security
+      app: ehr-test-label-token
   template:
     metadata:
       labels:
-        app: ehr-spring-security
+        app: ehr-test-label-token
+        cocreate.io/approved: "true"
     spec:
       securityContext:
         runAsNonRoot: true
@@ -43,15 +46,7 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop: ["ALL"]
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-            initialDelaySeconds: 60
-            periodSeconds: 15
+      volumes:
+        - name: workload-token
+          secret:
+            secretName: cocreate-workload-token
