@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  APP_NAME: "EHR Application"
+  APP_ENV: {{ .Values.environment }}
+  APP_PORT: "{{ .Values.container.port }}"

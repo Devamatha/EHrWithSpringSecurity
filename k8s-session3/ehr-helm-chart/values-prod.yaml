@@ -1,0 +1,17 @@
+# Production overrides
+replicas: 5
+
+container:
+  tag: "2.0"
+
+service:
+  type: LoadBalancer
+  nodePort: 31080
+
+resources:
+  cpuRequest: "500m"
+  memoryRequest: "512Mi"
+  cpuLimit: "1000m"
+  memoryLimit: "1Gi"
+
+environment: production

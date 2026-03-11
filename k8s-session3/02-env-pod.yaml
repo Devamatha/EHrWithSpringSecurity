@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: env-pod
+  labels:
+    app: env-demo
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sh", "-c", "echo App=$APP_NAME Env=$APP_ENV && sleep 3600"]
+      env:
+        - name: APP_NAME
+          value: "EHR-Application"
+        - name: APP_ENV
+          value: "development"

@@ -1,0 +1,21 @@
+# Default values (Dev environment)
+replicas: 1
+
+container:
+  name: ehr-app
+  image: ehr-spring-app
+  tag: "1.0"
+  port: 8080
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30080
+
+resources:
+  cpuRequest: "100m"
+  memoryRequest: "128Mi"
+  cpuLimit: "250m"
+  memoryLimit: "256Mi"
+
+environment: development
