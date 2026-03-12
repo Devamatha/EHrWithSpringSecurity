@@ -18,6 +18,13 @@ spec:
       annotations:
         cocreate.io/deploy-spec-id: "test-123"
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: ehr-spring-security
           image: ghcr.io/devamatha/ehr-spring-security:latest
@@ -29,6 +36,10 @@ spec:
                 secretKeyRef:
                   name: cocreate-workload-token
                   key: token
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
       volumes:
         - name: workload-token
           secret:
