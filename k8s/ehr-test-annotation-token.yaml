@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ehr-test-annotation-token
-  namespace: environment
   labels:
     app: ehr-spring-security
   annotations:
@@ -19,13 +18,6 @@ spec:
       annotations:
         cocreate.io/deploy-spec-id: "test-123"
     spec:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        seccompProfile:
-          type: RuntimeDefault
       containers:
         - name: ehr-spring-security
           image: ghcr.io/devamatha/ehr-spring-security:latest
@@ -37,17 +29,6 @@ spec:
                 secretKeyRef:
                   name: cocreate-workload-token
                   key: token
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
       volumes:
         - name: workload-token
           secret:
