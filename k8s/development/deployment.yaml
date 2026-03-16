@@ -1,0 +1,69 @@
+# =============================================================================
+# DEVELOPMENT ENVIRONMENT - Workload (DeploySpec)
+# =============================================================================
+# Environment enforces: PRIVILEGED pod security, NONE network policy,
+#   OPEN secrets, PERMISSIVE workload policy
+#
+# Since the environment is PRIVILEGED, this workload has no restrictions.
+# No securityContext, no token injection, any secret reference is fine.
+# Resource limits are optional — LimitRange provides defaults if omitted.
+# =============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ehr-spring-security
+  labels:
+    app: ehr-spring-security
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ehr-spring-security
+  template:
+    metadata:
+      labels:
+        app: ehr-spring-security
+    spec:
+      containers:
+        - name: ehr-spring-security
+          image: ghcr.io/devamatha/ehr-spring-security:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "dev"
+            # OPEN secrets policy — can reference any secret freely
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ehr-db-credentials
+                  key: password
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          # No resources specified — environment's LimitRange auto-assigns defaults
+          # No securityContext — PRIVILEGED allows everything
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ehr-spring-security
+  labels:
+    app: ehr-spring-security
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: ehr-spring-security

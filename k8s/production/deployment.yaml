@@ -1,0 +1,120 @@
+# =============================================================================
+# PRODUCTION ENVIRONMENT - Workload (DeploySpec)
+# =============================================================================
+# Environment enforces: RESTRICTED pod security, STRICT network policy,
+#   RESTRICTED secrets, STRICT workload policy, Approval required (2)
+#
+# RESTRICTED pod security (auto-enforced by namespace PSA labels):
+#   - Pods MUST set: runAsNonRoot, seccompProfile, drop ALL capabilities
+#   - Pods MUST NOT use: privileged, hostNetwork, hostPID, hostIPC
+#   - allowPrivilegeEscalation must be false
+#   - If your pod doesn't comply, Kubernetes REJECTS it at admission
+#
+# STRICT network policy (auto-created in namespace):
+#   - ALL ingress DENIED by default
+#   - Egress: ONLY DNS (port 53) allowed
+#   - Must add explicit NetworkPolicy for any needed traffic
+#
+# RESTRICTED secrets (auto-enforced by platform):
+#   - Only environment-scoped secrets, encrypted with env-specific key
+#
+# STRICT workload policy (auto-enforced by admission webhook):
+#   - Workload token must be injected and validated
+#
+# Resource Quota & LimitRange: auto-applied by environment
+#   (16 CPU / 32Gi memory quota, defaults assigned if not specified)
+#
+# Approval: Required (2 approvers) — enforced by platform before sync
+# =============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ehr-spring-security
+  labels:
+    app: ehr-spring-security
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: ehr-spring-security
+  template:
+    metadata:
+      labels:
+        app: ehr-spring-security
+    spec:
+      # -----------------------------------------------------------------
+      # REQUIRED by RESTRICTED pod security (namespace rejects without it)
+      # -----------------------------------------------------------------
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      containers:
+        - name: ehr-spring-security
+          image: ghcr.io/devamatha/ehr-spring-security:latest
+          ports:
+            - containerPort: 8080
+          # REQUIRED by RESTRICTED pod security
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            # RESTRICTED secrets — environment-scoped only
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ehr-prod-db-credentials
+                  key: password
+            # STRICT workload policy — token validated by admission webhook
+            - name: COCREATE_WORKLOAD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cocreate-workload-token
+                  key: token
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          volumeMounts:
+            # Needed because readOnlyRootFilesystem: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ehr-spring-security
+  labels:
+    app: ehr-spring-security
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: ehr-spring-security
