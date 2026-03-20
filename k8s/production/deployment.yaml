@@ -46,6 +46,10 @@ spec:
     metadata:
       labels:
         app: ehr-spring-security
+      annotations:
+        # SEALED secrets — webhook BLOCKS plain injection, must use encrypted CSI
+        cocreate.io/encrypted-secret-path: "sss/database/db-credential"
+        cocreate.io/secret-version: "2"
     spec:
       # -----------------------------------------------------------------
       # REQUIRED by RESTRICTED pod security (namespace rejects without it)
@@ -72,12 +76,6 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "prod"
-            # RESTRICTED secrets — environment-scoped only
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: ehr-prod-db-credentials
-                  key: password
             # STRICT workload policy — token validated by admission webhook
             - name: COCREATE_WORKLOAD_TOKEN
               valueFrom:

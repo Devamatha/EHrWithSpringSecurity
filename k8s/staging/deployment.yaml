@@ -43,6 +43,10 @@ spec:
     metadata:
       labels:
         app: ehr-spring-security
+      annotations:
+        # RESTRICTED secrets — webhook injects environment-scoped secrets only
+        cocreate.io/secret-path: "staging/db/database"
+        cocreate.io/secret-version: "2"
     spec:
       containers:
         - name: ehr-spring-security
@@ -52,12 +56,6 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "staging"
-            # RESTRICTED secrets — must be environment-scoped secrets only
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: ehr-staging-db-credentials
-                  key: password
             # STRICT workload policy — token auto-validated by admission webhook
             - name: COCREATE_WORKLOAD_TOKEN
               valueFrom:

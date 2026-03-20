@@ -23,6 +23,10 @@ spec:
     metadata:
       labels:
         app: ehr-spring-security
+      annotations:
+        # OPEN secrets policy — webhook injects secrets as env vars
+        cocreate.io/secret-path: "development-env/database/db-credentials"
+        cocreate.io/secret-version: "1"
     spec:
       containers:
         - name: ehr-spring-security
@@ -32,12 +36,6 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "dev"
-            # OPEN secrets policy — can reference any secret freely
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: ehr-db-credentials
-                  key: password
           readinessProbe:
             httpGet:
               path: /actuator/health
